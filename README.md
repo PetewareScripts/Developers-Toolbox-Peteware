@@ -1,6 +1,6 @@
 # 🧰 Peteware Developer Toolbox
 
-Welcome to the **Peteware Developer Toolbox**, a powerful script designed to assist script developers in creating, testing, and debugging game-breaking Roblox scripts. Whether you're reverse-engineering remotes, monitoring exploit environments, or simply looking for quick access to utilities like Dex or Hydroxide, this toolbox is your one-stop solution.
+Welcome to the **Peteware Developer Toolbox**, a powerful open-sourced script designed to assist script developers in creating, testing, and debugging game-breaking Roblox scripts. Whether you're reverse-engineering remotes, monitoring exploit environments, or simply looking for quick access to utilities like Dex or Hydroxide, this toolbox is your one-stop solution.
 
 ---
 
@@ -34,4 +34,4 @@ Welcome to the **Peteware Developer Toolbox**, a powerful script designed to ass
 
 Paste the following into your executor console:
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/poupeue/Developers-Toobox-Peteware/refs/heads/main/Toolbox", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua", true))()
