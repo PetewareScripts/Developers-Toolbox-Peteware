@@ -418,6 +418,10 @@ end)
 
 local Other = PetewareToolbox:NewSection("Other")
 
+Other:CreateButton("Launch Peteware", function()
+    loadstring(game:HttpGet("https://pastefy.app/Hs52zR1t/raw"))()
+end)
+
 Other:CreateButton("FPS Booster", function()
 -- Made by RIP#6666
 _G.Settings = {
@@ -447,7 +451,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord
 end)
 
 Other:CreateButton("Executor Info", function()
-getExecutorInfo()
+    getExecutorInfo()
 end)
 
 Other:CreateButton("Rejoin", function()
