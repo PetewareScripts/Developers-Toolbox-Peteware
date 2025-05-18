@@ -32,6 +32,6 @@ Welcome to the **Peteware Developer Toolbox**, a powerful open-sourced script de
 
 ## 🚀 How to Use
 
-Paste the following into your executor console:
+Paste the following into your executor:
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua", true))()
