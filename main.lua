@@ -228,11 +228,13 @@ local function GetFullPath(instance)
     return table.concat(path, " → ")
 end
 
-local function ScanIntValues()
-    print([[ [Toolbox]: Scanning for IntValue Instances...
-    
+local function debugIntValue()
+    print([[
+
+[Toolbox]: Scanning for IntValue Instances...
+
 ---------------------------------------------------------------------------------------------------------------------------
-    
+        
         ]])
 
     local found = false
@@ -240,7 +242,11 @@ local function ScanIntValues()
     for _, instance in ipairs(game:GetDescendants()) do
         if instance:IsA("IntValue") then
             found = true
-            print(" →", GetFullPath(instance), "=", instance.Value)
+            local name = instance.Name
+            local path = GetFullPath(instance)
+            local value = instance.Value
+
+            print(string.format("Name: %s | Path: %s | Value: %s", name, path, tostring(value)))
         end
     end
 
@@ -249,9 +255,9 @@ local function ScanIntValues()
     end
 
     print([[
-        
+
 ---------------------------------------------------------------------------------------------------------------------------
-    
+
         ]])
 end
 
