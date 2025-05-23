@@ -197,7 +197,6 @@ end
 end
 
 local function Debug_G()
-        warn("[Toolbox]: No _G contents found")
     print([[[Toolbox]: _G contents:
     
 ---------------------------------------------------------------------------------------------------------------------------
@@ -210,13 +209,49 @@ local function Debug_G()
 end
 
 if not found_G then
-        warn("[Toolbox]: No Recently Added _G contents found")
+        warn("[Toolbox]: No _G contents found")
     end
 
     print([[ 
         
 ---------------------------------------------------------------------------------------------------------------------------
 
+        ]])
+end
+
+local function GetFullPath(instance)
+    local path = {}
+    while instance and instance ~= game do
+        table.insert(path, 1, instance.Name)
+        instance = instance.Parent
+    end
+    return table.concat(path, " → ")
+end
+
+local function ScanIntValues()
+    print([[ [Toolbox]: Scanning for IntValue Instances...
+    
+---------------------------------------------------------------------------------------------------------------------------
+    
+        ]])
+
+    local found = false
+
+    for _, instance in ipairs(game:GetDescendants()) do
+        if instance:IsA("IntValue") then
+            found = true
+            print(" →", GetFullPath(instance), "=", instance.Value)
+        end
+    end
+
+    if not found then
+        warn("[Toolbox]: No IntValue instances found in the game.")
+    end
+
+    print([[
+        
+---------------------------------------------------------------------------------------------------------------------------
+    
         ]])
 end
 
