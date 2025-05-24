@@ -22,6 +22,12 @@ local foundNewgetgenvNew = false
 local foundNew_GNew = false
 local found_G = false
 
+local foundIntValue = false
+
+local startTime = os.clock()
+local endTime = os.clock()
+local finalTime = endTime - startTime
+
 local original_G = {}
 local original_genv = {}
 
@@ -128,7 +134,8 @@ local function serverHop()
 end
 
 local function DebuggetgenvNew()
-    print([[ [Toolbox]: getgenv() contents:
+    startTime = os.clock()
+    print([[ [Toolbox]: Scanning for Recently Added getgenv() contents...
     
 ---------------------------------------------------------------------------------------------------------------------------
         
@@ -136,25 +143,29 @@ local function DebuggetgenvNew()
     
     for name, value in pairs(getgenv()) do
         if not original_genv[name] then
-            foundNewgetgenvNew = true
+            foundNewgetgenv = true
             print(" →", name, "=", value)
         end
     end
     
-    if not foundNewgetgenvNew then
-        warn("[Toolbox]: No Recently Added getgenv() contents found")
+    if not foundNewgetgenv then
+        warn("[Toolbox]: No Recently Added getgenv() contents found.")
     end
     
-    print([[ 
+    endTime = os.clock()
+    finalTime = endTime - startTime
+    
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds. 
         
 ---------------------------------------------------------------------------------------------------------------------------
         
-        ]])
+        ]], finalTime))
 end
 
-
 local function Debug_GNew()
-    print([[ [Toolbox]: _G contents:
+    startTime = os.clock()
+    print([[ [Toolbox]: Scanning for Recently Added _G contents...
     
 ---------------------------------------------------------------------------------------------------------------------------
         
@@ -162,24 +173,29 @@ local function Debug_GNew()
     
     for name, value in pairs(_G) do
         if not original_G[name] then
-            foundNew_GNew = true
+            foundNew_G = true
             print(" →", name, "=", value)
         end
     end
     
-    if not foundNew_GNew then
-        warn("[Toolbox]: No Recently Added _G contents found")
+    if not foundNew_G then
+        warn("[Toolbox]: No Recently Added _G contents found.")
     end
     
-    print([[ 
+    endTime = os.clock()
+    finalTime = endTime - startTime
+    
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds. 
         
 ---------------------------------------------------------------------------------------------------------------------------
         
-        ]])
+        ]], finalTime))
 end
 
 local function Debuggetgenv()
-    print([[ [Toolbox]: getgenv() contents:
+    startTime = os.clock()
+    print([[ [Toolbox]: Scanning for getgenv() contents...
     
 ---------------------------------------------------------------------------------------------------------------------------
         
@@ -188,16 +204,21 @@ local function Debuggetgenv()
     for name, value in pairs(getgenv()) do
     print(" →", name, "=", value)
 end
+    
+    endTime = os.clock()
+    finalTime = endTime - startTime
 
-    print([[ 
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds. 
         
 ---------------------------------------------------------------------------------------------------------------------------
         
-        ]])
+        ]], finalTime))
 end
 
 local function Debug_G()
-    print([[[Toolbox]: _G contents:
+    startTime = os.clock()
+    print([[[Toolbox]: Scanning for _G contents...
     
 ---------------------------------------------------------------------------------------------------------------------------
         
@@ -209,14 +230,18 @@ local function Debug_G()
 end
 
 if not found_G then
-        warn("[Toolbox]: No _G contents found")
+        warn("[Toolbox]: No _G contents found.")
     end
+    
+    endTime = os.clock()
+    finalTime = endTime - startTime
 
-    print([[ 
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds. 
         
 ---------------------------------------------------------------------------------------------------------------------------
 
-        ]])
+        ]], finalTime))
 end
 
 local function GetFullPath(instance)
@@ -228,7 +253,7 @@ local function GetFullPath(instance)
     return table.concat(path, " → ")
 end
 
-local function debugIntValue()
+local function DebugIntValue()
     print([[
 
 [Toolbox]: Scanning for IntValue Instances...
@@ -237,11 +262,11 @@ local function debugIntValue()
         
         ]])
 
-    local found = false
+    foundIntValue = false
 
     for _, instance in ipairs(game:GetDescendants()) do
         if instance:IsA("IntValue") then
-            found = true
+            foundIntValue = true
             local name = instance.Name
             local path = GetFullPath(instance)
             local value = instance.Value
@@ -250,8 +275,8 @@ local function debugIntValue()
         end
     end
 
-    if not found then
-        warn("[Toolbox]: No IntValue instances found in the game.")
+    if not foundIntValue then
+        warn("[Toolbox]: No IntValue instances found.")
     end
 
     print([[
@@ -457,6 +482,16 @@ Debugging2:CreateTextbox("Delete Global Variable V2", function(text)
     end
 end)
 
+local InstanceScanner = PetewareToolbox:NewSection("Instance Scanner")
+
+InstanceScanner:CreateButton("Scan IntValue Instances", function()
+StarterGui:SetCore("DevConsoleVisible", true)
+    DebugIntValue()
+end)
+
+InstanceScanner:CreateTextbox("", function(text)
+end)
+
 local Other = PetewareToolbox:NewSection("Other")
 
 Other:CreateButton("Launch Peteware", function()
@@ -503,7 +538,7 @@ Other:CreateButton("Server Hop", function()
     serverHop()
 end)
 
-local GlobalVariableTest = true -- set to true to create a _G and a getgenv() Variable for testing
+local GlobalVariableTest = false -- set to true to create a _G and a getgenv() Variable for testing
 
 if GlobalVariableTest then
     _G.VariableTest = true
