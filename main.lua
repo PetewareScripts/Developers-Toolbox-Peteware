@@ -25,8 +25,32 @@ local found_G = false
 foundInstanceClass = false
 
 local showProperties = {
+    -- Value containers
     IntValue = "Value",
     StringValue = "Value",
+    BoolValue = "Value",
+    NumberValue = "Value",
+    Color3Value = "Value",
+    Vector3Value = "Value",
+    CFrameValue = "Value",
+    ObjectValue = "Value",
+
+    -- Common parts
+    Part = "Transparency",        -- useful to detect invisible parts
+    Model = "Parent",
+    UnionOperation = "Transparency",
+    Decal = "Texture",            
+    Texture = "Texture",
+
+    -- Characters and Gameplay
+    Humanoid = "DisplayName",
+    Tool = "ToolTip",
+    Animation = "AnimationId",
+    AnimationTrack = "Animation",
+
+    -- Sounds and Effects
+    Sound = "SoundId",
+    ParticleEmitter = "Enabled",
 }
 
 local startTime = os.clock()
