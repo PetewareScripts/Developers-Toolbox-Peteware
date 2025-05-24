@@ -22,7 +22,12 @@ local foundNewgetgenvNew = false
 local foundNew_GNew = false
 local found_G = false
 
-local foundIntValue = false
+foundInstanceClass = false
+
+local showProperties = {
+    IntValue = "Value",
+    StringValue = "Value",
+}
 
 local startTime = os.clock()
 local endTime = os.clock()
@@ -244,48 +249,6 @@ if not found_G then
         ]], finalTime))
 end
 
-local function GetFullPath(instance)
-    local path = {}
-    while instance and instance ~= game do
-        table.insert(path, 1, instance.Name)
-        instance = instance.Parent
-    end
-    return table.concat(path, " → ")
-end
-
-local function DebugIntValue()
-    print([[
-
-[Toolbox]: Scanning for IntValue Instances...
-
----------------------------------------------------------------------------------------------------------------------------
-        
-        ]])
-
-    foundIntValue = false
-
-    for _, instance in ipairs(game:GetDescendants()) do
-        if instance:IsA("IntValue") then
-            foundIntValue = true
-            local name = instance.Name
-            local path = GetFullPath(instance)
-            local value = instance.Value
-
-            print(string.format("Name: %s | Path: %s | Value: %s", name, path, tostring(value)))
-        end
-    end
-
-    if not foundIntValue then
-        warn("[Toolbox]: No IntValue instances found.")
-    end
-
-    print([[
-
----------------------------------------------------------------------------------------------------------------------------
-
-        ]])
-end
-
 local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local PetewareToolbox = Library:NewWindow("Dev Toolbox | Peteware")
@@ -484,12 +447,45 @@ end)
 
 local InstanceScanner = PetewareToolbox:NewSection("Instance Scanner")
 
-InstanceScanner:CreateButton("Scan IntValue Instances", function()
-StarterGui:SetCore("DevConsoleVisible", true)
-    DebugIntValue()
-end)
+InstanceScanner:CreateTextbox("Scan by Class", function(className)
+    StarterGui:SetCore("DevConsoleVisible", true)
+    local startTime = os.clock()
+    local foundInstanceClass = false
 
-InstanceScanner:CreateTextbox("", function(text)
+    print(string.format([[
+[Toolbox]: Scanning for Instances of Class: %s
+
+---------------------------------------------------------------------------------------------------------------------------
+
+]], className))
+
+    for _, inst in ipairs(game:GetDescendants()) do
+        if inst.ClassName == className then
+            foundInstanceClass = true
+
+            local output = "Name → " .. inst.Name .. " | Path → " .. inst:GetFullName()
+            local propName = showProperties[className]
+            if propName and inst[propName] ~= nil then
+                output = output .. " | " .. propName .. " = " .. tostring(inst[propName])
+            end
+
+            print(output)
+        end
+    end
+
+    if not foundInstanceClass then
+        warn(string.format("[Toolbox]: No instances of class '%s' were found.", className))
+    end
+
+    local endTime = os.clock()
+    local finalTime = endTime - startTime
+
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+]], finalTime))
 end)
 
 local Other = PetewareToolbox:NewSection("Other")
