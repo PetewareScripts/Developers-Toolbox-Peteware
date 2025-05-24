@@ -22,6 +22,9 @@
 
 ## How to Use
 
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua",true))()```
+
 1. Execute the script above into your Roblox executor.  
 2. Use the GUI to navigate between features.  
 3. Use the "Server Hop" or "Rejoin" buttons to switch servers safely.  
