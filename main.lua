@@ -53,6 +53,11 @@ local showProperties = {
     ParticleEmitter = "Enabled",
 }
 
+local foundClasses = {}
+local classList = {}
+local inShowProps = nil
+local property = nil
+
 local startTime = os.clock()
 local endTime = os.clock()
 local finalTime = endTime - startTime
@@ -273,6 +278,52 @@ if not found_G then
         ]], finalTime))
 end
 
+local function FetchAvailableClasses()
+    startTime = os.clock()
+    print([[[Toolbox]: Scanning for Available Classes...
+
+---------------------------------------------------------------------------------------------------------------------------
+
+        ]])
+    
+    foundClasses = {}
+
+    for _, instance in pairs(game:GetDescendants()) do
+        foundClasses[instance.ClassName] = true
+    end
+    
+    classList = {}
+    for className in pairs(foundClasses) do
+        table.insert(classList, className)
+    end
+    table.sort(classList)
+
+    for _, className in ipairs(classList) do
+    property = showProperties[className]
+    if property then
+        print(string.format(
+            "Name → %s | showProperties table = true | PropertyShown = %s",
+            className,
+            tostring(property)
+        ))
+    else
+        print(string.format(
+            "Name → %s | showProperties table = false",
+            className
+        ))
+    end
+end
+
+    endTime = os.clock()
+    finalTime = endTime - startTime
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+        ]], finalTime))
+end
+
 local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local PetewareToolbox = Library:NewWindow("Dev Toolbox | Peteware")
@@ -470,6 +521,11 @@ Debugging2:CreateTextbox("Delete Global Variable V2", function(text)
 end)
 
 local InstanceScanner = PetewareToolbox:NewSection("Instance Scanner")
+
+InstanceScanner:CreateButton("Fetch All Available Classes", function()
+StarterGui:SetCore("DevConsoleVisible", true)
+    FetchAvailableClasses()
+end)
 
 InstanceScanner:CreateTextbox("Scan by Class", function(className)
     StarterGui:SetCore("DevConsoleVisible", true)
