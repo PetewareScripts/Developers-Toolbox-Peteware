@@ -54,7 +54,7 @@ local showProperties = {
 }
 
 local foundClasses = {}
-local classList = {}
+local orderList = {}
 local inShowProps = nil
 local property = nil
 
@@ -292,13 +292,13 @@ local function FetchAvailableClasses()
         foundClasses[instance.ClassName] = true
     end
     
-    classList = {}
+    orderList = {}
     for className in pairs(foundClasses) do
-        table.insert(classList, className)
+        table.insert(orderList, className)
     end
-    table.sort(classList)
+    table.sort(orderList)
 
-    for _, className in ipairs(classList) do
+    for _, className in ipairs(orderList) do
     property = showProperties[className]
     if property then
         print(string.format(
