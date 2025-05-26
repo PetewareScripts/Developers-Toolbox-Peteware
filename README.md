@@ -18,8 +18,6 @@
   - Advanced Anti-Cheat Scanner  
 - User-friendly notifications and developer console integration  
 
----
-
 ## How to Use
 
 ```lua
@@ -43,7 +41,6 @@ You are free to use, modify, and distribute the code, but you must give proper c
 
 Join our Discord for support and updates:
 https://discord.gg/4UjSNcPCdh
-
 
 ---
 
