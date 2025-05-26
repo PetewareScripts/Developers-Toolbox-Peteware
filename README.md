@@ -44,4 +44,4 @@ https://discord.gg/4UjSNcPCdh
 
 ---
 
-## Developed by Peteware
+### Developed by Peteware
