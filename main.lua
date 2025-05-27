@@ -2,7 +2,7 @@
 PLEASE READ - IMPORTANT
 
 © 2025 Peteware
-This project is part of Peteware V1, an open-source Roblox script collection.
+This project is part of Developers-Toolbox-Peteware, an open-source roblox toolbox for developing scripts.
 
 Licensed under the MIT License.  
 See the full license at:  
@@ -630,3 +630,7 @@ if GlobalVariableTest then
     getgenv().VariableTest = true
 end
 
+--[[// Credits
+Infinite Yield: Server Hop
+Infinite Yield Discord Server: https://discord.gg/78ZuWSq
+]]
