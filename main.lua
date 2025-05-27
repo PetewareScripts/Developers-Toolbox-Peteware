@@ -570,6 +570,10 @@ end)
 
 local Other = PetewareToolbox:NewSection("Other")
 
+Other:CreateButton("Stopwatch", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/stopwatch.lua",true))()
+end)
+
 Other:CreateButton("Launch Peteware", function()
     loadstring(game:HttpGet("https://pastefy.app/Hs52zR1t/raw"))()
 end)
