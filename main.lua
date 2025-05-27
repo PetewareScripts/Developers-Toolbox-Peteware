@@ -1,17 +1,22 @@
 --[[
+PLEASE READ - IMPORTANT
 
- _______  _______ _________ _______           _______  _______  _______     _________ _______  _______  _        ______   _______          
-(  ____ )(  ____ \\__   __/(  ____ \|\     /|(  ___  )(  ____ )(  ____ \    \__   __/(  ___  )(  ___  )( \      (  ___ \ (  ___  )|\     /|
-| (    )|| (    \/   ) (   | (    \/| )   ( || (   ) || (    )|| (    \/       ) (   | (   ) || (   ) || (      | (   ) )| (   ) |( \   / )
-| (____)|| (__       | |   | (__    | | _ | || (___) || (____)|| (__           | |   | |   | || |   | || |      | (__/ / | |   | | \ (_) / 
-|  _____)|  __)      | |   |  __)   | |( )| ||  ___  ||     __)|  __)          | |   | |   | || |   | || |      |  __ (  | |   | |  ) _ (  
-| (      | (         | |   | (      | || || || (   ) || (\ (   | (             | |   | |   | || |   | || |      | (  \ \ | |   | | / ( ) \ 
-| )      | (____/\   | |   | (____/\| () () || )   ( || ) \ \__| (____/\       | |   | (___) || (___) || (____/\| )___) )| (___) |( /   \ )
-|/       (_______/   )_(   (_______/(_______)|/     \||/   \__/(_______/       )_(   (_______)(_______)(_______/|/ \___/ (_______)|/     \|
-                                                                                                                                                                                                                                                                                  
+© 2025 Peteware
+This project is part of Peteware V1, an open-source Roblox script collection.
+
+Licensed under the MIT License.  
+See the full license at:  
+https://github.com/PetewareScripts/Developers-Toolbox-Peteware/blob/main/LICENSE
+
+**Attribution required:** You must give proper credit to Peteware when using or redistributing this project or its derivatives.
+
+This software is provided "AS IS" without warranties of any kind.  
+Violations of license terms may result in legal action.
+
+Thank you for respecting the license and supporting open source software!
+
+Peteware Development Team
 ]]
-
---Discord server: https://discord.gg/zNFdGtvdgR
 
 if _G.VariableTest and getgenv().VariableTest then
     _G.VariableTest = nil
@@ -624,3 +629,4 @@ if GlobalVariableTest then
     _G.VariableTest = true
     getgenv().VariableTest = true
 end
+
