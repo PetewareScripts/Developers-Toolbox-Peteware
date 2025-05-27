@@ -1,3 +1,23 @@
+--[[
+PLEASE READ - IMPORTANT
+
+© 2025 Peteware
+This project is part of Peteware V1, an open-source Roblox script collection.
+
+Licensed under the MIT License.  
+See the full license at:  
+https://github.com/PetewareScripts/Developers-Toolbox-Peteware/blob/main/LICENSE
+
+**Attribution required:** You must give proper credit to Peteware when using or redistributing this project or its derivatives.
+
+This software is provided "AS IS" without warranties of any kind.  
+Violations of license terms may result in legal action.
+
+Thank you for respecting the license and supporting open source software!
+
+Peteware Development Team
+]]
+
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 
