@@ -575,7 +575,7 @@ Other:CreateButton("Stopwatch", function()
 end)
 
 Other:CreateButton("Launch Peteware", function()
-    loadstring(game:HttpGet("https://pastefy.app/Hs52zR1t/raw"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/Loader",true))()
 end)
 
 Other:CreateButton("FPS Booster", function()
