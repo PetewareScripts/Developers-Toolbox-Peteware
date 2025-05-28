@@ -30,6 +30,7 @@ end
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "StopwatchGUI"
 screenGui.Parent = CoreGui
+screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(0, 220, 0, 110)
