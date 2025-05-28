@@ -24,6 +24,7 @@ repeat task.wait() until game:IsLoaded()
 task.wait(1)
 end
 
+--// Services & Setup
 if _G.VariableTest and getgenv().VariableTest then
     _G.VariableTest = nil
     getgenv().VariableTest = nil
@@ -335,6 +336,7 @@ end
         ]], finalTime))
 end
 
+--// Main UI
 local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local PetewareToolbox = Library:NewWindow("Dev Toolbox | Peteware")
@@ -629,7 +631,8 @@ Other:CreateButton("Server Hop", function()
     serverHop()
 end)
 
-local GlobalVariableTest = false -- set to true to create a _G and a getgenv() Variable for testing
+--// Global Variable Testing
+local GlobalVariableTest = true -- set to true to create a _G and a getgenv() Variable for testing
 
 if GlobalVariableTest then
     _G.VariableTest = true
