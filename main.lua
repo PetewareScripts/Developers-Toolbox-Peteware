@@ -24,6 +24,8 @@ repeat task.wait() until game:IsLoaded()
 task.wait(1)
 end
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/advertise.lua",true))()
+
 --// Services & Setup
 if _G.VariableTest and getgenv().VariableTest then
     _G.VariableTest = nil
