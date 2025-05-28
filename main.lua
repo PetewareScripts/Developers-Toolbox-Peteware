@@ -18,6 +18,12 @@ Thank you for respecting the license and supporting open source software!
 Peteware Development Team
 ]]
 
+--// Loading Handler
+if not game:IsLoaded() then
+repeat task.wait() until game:IsLoaded()
+task.wait(1)
+end
+
 if _G.VariableTest and getgenv().VariableTest then
     _G.VariableTest = nil
     getgenv().VariableTest = nil
