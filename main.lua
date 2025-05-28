@@ -31,7 +31,7 @@ local uis = game:GetService("UserInputService")
 httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 
-local function rejoinServer()
+local function RejoinServer()
     StarterGui:SetCore("SendNotification", {
         Title = "Rejoining...",
         Text = "Attempting to Rejoin Server",
@@ -42,7 +42,7 @@ task.wait(1)
     game:GetService("TeleportService"):TeleportToPlaceInstance(game.placeId, game.jobId)
 end
 
-local function serverHop()
+local function ServerHop()
     StarterGui:SetCore("SendNotification", {
                 Title = "Hopping...",
                 Text = "Attempting to Server Hop",
@@ -88,7 +88,6 @@ local TeleportCheck = false
 local executeOnTeleport = true -- set to false if you dont want execution on server hop / rejoin
 
 if executeOnTeleport then
-
         game.Players.LocalPlayer.OnTeleport:Connect(function(State)
             if not TeleportCheck and queueteleport then
                 TeleportCheck = true
@@ -630,11 +629,11 @@ Other:CreateButton("Executor Info", function()
 end)
 
 Other:CreateButton("Rejoin", function()
-    rejoinServer()
+    RejoinServer()
 end)
 
 Other:CreateButton("Server Hop", function()
-    serverHop()
+    ServerHop()
 end)
 
 --// Global Variable Testing
