@@ -21,6 +21,12 @@ Peteware Development Team
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 
+local oldUI = CoreGui:FindFirstChild("StopwatchGUI")
+
+if oldUI then
+    oldUI:Destroy()
+end
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "StopwatchGUI"
 screenGui.Parent = CoreGui
