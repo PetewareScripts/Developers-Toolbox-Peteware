@@ -22,19 +22,19 @@ Peteware Development Team
 if not game:IsLoaded() then
 repeat task.wait() until game:IsLoaded()
 task.wait(1)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/advertise.lua",true))()
 end
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/advertise.lua",true))()
-
 --// Services & Setup
+local StarterGui = game:GetService("StarterGui")
+local uis = game:GetService("UserInputService")
+httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+
 if _G.VariableTest and getgenv().VariableTest then
     _G.VariableTest = nil
     getgenv().VariableTest = nil
 end
-
-local foundNewgetgenvNew = false
-local foundNew_GNew = false
-local found_G = false
 
 foundInstanceClass = false
 
@@ -76,6 +76,11 @@ local startTime = os.clock()
 local endTime = os.clock()
 local finalTime = endTime - startTime
 
+--// Variable Debugging
+local foundNewgetgenvNew = false
+local foundNew_GNew = false
+local found_G = false
+
 local original_G = {}
 local original_genv = {}
 
@@ -87,16 +92,11 @@ for k, _ in pairs(getgenv()) do
     original_genv[k] = true
 end
 
-local StarterGui = game:GetService("StarterGui")
-local uis = game:GetService("UserInputService")
-httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
-queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
-
 local TeleportCheck = false
 
-local ExecuteOnTeleport = true -- set to false if you dont want execution on server hop / rejoin
+local executeOnTeleport = true -- set to false if you dont want execution on server hop / rejoin
 
-if ExecuteOnTeleport then
+if executeOnTeleport then
 
         game.Players.LocalPlayer.OnTeleport:Connect(function(State)
             if not TeleportCheck and queueteleport then
