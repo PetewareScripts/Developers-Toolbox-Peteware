@@ -22,7 +22,7 @@ Peteware Development Team
 local coreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 
---// UI Optimise
+--// UI Cleanup
 local oldUI = coreGui:FindFirstChild("StopwatchGUI")
 
 if oldUI then
