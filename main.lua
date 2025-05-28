@@ -26,13 +26,13 @@ task.wait(1)
 end
 
 --// Services & Setup
-local StarterGui = game:GetService("StarterGui")
+local starterGui = game:GetService("StarterGui")
 local uis = game:GetService("UserInputService")
 httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 
 local function RejoinServer()
-    StarterGui:SetCore("SendNotification", {
+    starterGui:SetCore("SendNotification", {
         Title = "Rejoining...",
         Text = "Attempting to Rejoin Server",
         Icon = "rbxassetid://108052242103510",
@@ -43,7 +43,7 @@ task.wait(1)
 end
 
 local function ServerHop()
-    StarterGui:SetCore("SendNotification", {
+    starterGui:SetCore("SendNotification", {
                 Title = "Hopping...",
                 Text = "Attempting to Server Hop",
                 Icon = "rbxassetid://108052242103510",
@@ -65,7 +65,7 @@ local function ServerHop()
         if #servers > 0 then
             game:GetService("TeleportService"):TeleportToPlaceInstance(game.placeId, servers[math.random(1, #servers)], Player)
         else
-            return StarterGui:SetCore("SendNotification", {
+            return starterGui:SetCore("SendNotification", {
                 Title = "Server Hop",
                 Text = "Server Hop Failed. Couldnt find a available server",
                 Icon = "rbxassetid://108052242103510",
@@ -73,7 +73,7 @@ local function ServerHop()
             })
         end
     else
-       StarterGui:SetCore("SendNotification", {
+       starterGui:SetCore("SendNotification", {
                 Title = "Incompatible Exploit",
                 Text = "Your exploit does not support this function (missing request)",
                 Icon = "rbxassetid://108052242103510",
@@ -121,7 +121,7 @@ local executorName = identifyexecutor()
 local executorLevel = getthreadcontext()
 
 local function getExecutorInfo()
-game:GetService("StarterGui"):SetCore("DevConsoleVisible", true)
+game:GetService("starterGui"):SetCore("DevConsoleVisible", true)
 print("Device: " .. deviceUser)    
 print("Executor: " .. executorName)
 print("Executor Level: " .. executorLevel)
@@ -379,22 +379,22 @@ end)
 local Debugging1 = PetewareToolbox:NewSection("Debugging1 (Advanced)")
 
 Debugging1:CreateButton("Print Global Variables V1", function()
-StarterGui:SetCore("DevConsoleVisible", true)
+starterGui:SetCore("DevConsoleVisible", true)
     Debug_G()
 end)
 
 Debugging1:CreateButton("Print Global Variables V2", function()
-StarterGui:SetCore("DevConsoleVisible", true)
+starterGui:SetCore("DevConsoleVisible", true)
     Debuggetgenv()
 end)
 
 Debugging1:CreateButton("Print Recent Global Variables V1", function()
-StarterGui:SetCore("DevConsoleVisible", true)
+starterGui:SetCore("DevConsoleVisible", true)
     Debug_GNew()
 end)
 
 Debugging1:CreateButton("Print Recent Global Variables V2", function()
-StarterGui:SetCore("DevConsoleVisible", true)
+starterGui:SetCore("DevConsoleVisible", true)
     DebuggetgenvNew()
 end)
 
@@ -403,10 +403,10 @@ Debugging1:CreateTextbox("Copy Global Variable V1", function(text)
         local variableValue = tostring(_G[text])
         setclipboard("_G." .. text .. " = " .. variableValue)
         print("Copied: _G." .. text .. " = " .. variableValue)
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     else
         print(text .. " Variable not found in _G.")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
@@ -415,10 +415,10 @@ Debugging1:CreateTextbox("Copy Global Variable V2", function(text)
         local variableValue = tostring(getgenv()[text])
         setclipboard("getgenv()." .. text .. " = " .. variableValue)
         print("Copied: getgenv()." .. text .. " = " .. variableValue)
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     else
         print(text .. " Variable not found in getgenv().")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
@@ -432,18 +432,18 @@ local varName, value = input:match("^(%S+)%s*=%s*(.+)$")
             if success then
                 _G[varName] = result
                 print("Created: _G." .. varName .. " = " .. tostring(result))
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             else
                 print("Invalid value format.")
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             end
         else
             print(varName .. " found in _G. Creating not allowed.")
-            StarterGui:SetCore("DevConsoleVisible", true)
+            starterGui:SetCore("DevConsoleVisible", true)
         end
     else
         print("Invalid input format. Please use 'VariableName = value'.")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
@@ -455,18 +455,18 @@ local varName, value = input:match("^(%S+)%s*=%s*(.+)$")
             if success then
                 getgenv()[varName] = result
                 print("Created: getgenv()." .. varName .. " = " .. tostring(result))
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             else
                 print("Invalid value format.")
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             end
         else
             print(varName .. " found in getgenv(). Creating not allowed.")
-            StarterGui:SetCore("DevConsoleVisible", true)
+            starterGui:SetCore("DevConsoleVisible", true)
         end
     else
         print("Invalid input format. Please use 'VariableName = value'.")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
@@ -478,18 +478,18 @@ Debugging2:CreateTextbox("Edit Global Variable V1", function(input)
             if success then
                 _G[varName] = result
                 print("Edited: _G." .. varName .. " = " .. tostring(result))
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             else
                 print("Invalid value format.")
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             end
         else
             print(varName .. " not found in _G. Editing not allowed.")
-            StarterGui:SetCore("DevConsoleVisible", true)
+            starterGui:SetCore("DevConsoleVisible", true)
         end
     else
         print("Invalid input format. Please use 'VariableName = value'.")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
@@ -501,18 +501,18 @@ Debugging2:CreateTextbox("Edit Global Variable V2", function(input)
             if success then
                 getgenv()[varName] = result
                 print("Edited: getgenv()." .. varName .. " = " .. tostring(result))
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             else
                 print("Invalid value format.")
-                StarterGui:SetCore("DevConsoleVisible", true)
+                starterGui:SetCore("DevConsoleVisible", true)
             end
         else
             print(varName .. " not found in getgenv(). Editing not allowed.")
-            StarterGui:SetCore("DevConsoleVisible", true)
+            starterGui:SetCore("DevConsoleVisible", true)
         end
     else
         print("Invalid input format. Please use 'VariableName = value'.")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
@@ -520,10 +520,10 @@ Debugging2:CreateTextbox("Delete Global Variable V1", function(text)
     if _G[text] ~= nil then
         _G[text] = nil
         print("Deleted: _G." .. text)
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     else
         print(text .. " not found in _G.")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
@@ -531,22 +531,22 @@ Debugging2:CreateTextbox("Delete Global Variable V2", function(text)
     if getgenv()[text] ~= nil then
         getgenv()[text] = nil
         print("Deleted: getgenv()." .. text)
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     else
         print(text .. " not found in getgenv().")
-        StarterGui:SetCore("DevConsoleVisible", true)
+        starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
 
 local InstanceScanner = PetewareToolbox:NewSection("Instance Scanner")
 
 InstanceScanner:CreateButton("Fetch All Available Classes", function()
-StarterGui:SetCore("DevConsoleVisible", true)
+starterGui:SetCore("DevConsoleVisible", true)
     FetchAvailableClasses()
 end)
 
 InstanceScanner:CreateTextbox("Scan by Class", function(className)
-    StarterGui:SetCore("DevConsoleVisible", true)
+    starterGui:SetCore("DevConsoleVisible", true)
     local startTime = os.clock()
     local foundInstanceClass = false
 
