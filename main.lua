@@ -22,8 +22,9 @@ Peteware Development Team
 if not game:IsLoaded() then
 repeat task.wait() until game:IsLoaded()
 task.wait(1)
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/advertise.lua",true))()
 end
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/advertise.lua",true))()
 
 --// Services & Setup
 local starterGui = game:GetService("StarterGui")
