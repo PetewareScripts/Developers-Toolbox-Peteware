@@ -18,18 +18,21 @@ Thank you for respecting the license and supporting open source software!
 Peteware Development Team
 ]]
 
-local CoreGui = game:GetService("CoreGui")
+--// Services & Setup
+local coreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 
-local oldUI = CoreGui:FindFirstChild("StopwatchGUI")
+--// UI Optimise
+local oldUI = coreGui:FindFirstChild("StopwatchGUI")
 
 if oldUI then
     oldUI:Destroy()
 end
 
+--// Main UI
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "StopwatchGUI"
-screenGui.Parent = CoreGui
+screenGui.Parent = coreGui
 screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", screenGui)
@@ -39,6 +42,7 @@ frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.Active = true
 frame.Draggable = true
 
+--// Timer
 local timeLabel = Instance.new("TextLabel", frame)
 timeLabel.Size = UDim2.new(1, -20, 0, 50)
 timeLabel.Position = UDim2.new(0, 10, 0, 10)
@@ -48,6 +52,7 @@ timeLabel.Font = Enum.Font.SourceSansBold
 timeLabel.TextSize = 28
 timeLabel.Text = "00:00:00.000"
 
+--// Button Handlers
 local startButton = Instance.new("TextButton", frame)
 startButton.Size = UDim2.new(0, 60, 0, 25)
 startButton.Position = UDim2.new(0, 10, 0, 70)
@@ -115,6 +120,7 @@ closeButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
+--// Loop Handler
 RunService.RenderStepped:Connect(function()
     if running then
         elapsedTime = tick() - startTime
