@@ -31,105 +31,6 @@ local uis = game:GetService("UserInputService")
 httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 
-if _G.VariableTest and getgenv().VariableTest then
-    _G.VariableTest = nil
-    getgenv().VariableTest = nil
-end
-
-foundInstanceClass = false
-
-local showProperties = {
-    -- Value containers
-    IntValue = "Value",
-    StringValue = "Value",
-    BoolValue = "Value",
-    NumberValue = "Value",
-    Color3Value = "Value",
-    Vector3Value = "Value",
-    CFrameValue = "Value",
-    ObjectValue = "Value",
-
-    -- Common parts
-    Part = "Transparency",        -- useful to detect invisible parts
-    Model = "Parent",
-    UnionOperation = "Transparency",
-    Decal = "Texture",            
-    Texture = "Texture",
-
-    -- Characters and Gameplay
-    Humanoid = "DisplayName",
-    Tool = "ToolTip",
-    Animation = "AnimationId",
-    AnimationTrack = "Animation",
-
-    -- Sounds and Effects
-    Sound = "SoundId",
-    ParticleEmitter = "Enabled",
-}
-
-local foundClasses = {}
-local orderList = {}
-local inShowProps = nil
-local property = nil
-
-local startTime = os.clock()
-local endTime = os.clock()
-local finalTime = endTime - startTime
-
---// Variable Debugging
-local foundNewgetgenvNew = false
-local foundNew_GNew = false
-local found_G = false
-
-local original_G = {}
-local original_genv = {}
-
-for k, _ in pairs(_G) do
-    original_G[k] = true
-end
-
-for k, _ in pairs(getgenv()) do
-    original_genv[k] = true
-end
-
-local TeleportCheck = false
-
-local executeOnTeleport = true -- set to false if you dont want execution on server hop / rejoin
-
-if executeOnTeleport then
-
-        game.Players.LocalPlayer.OnTeleport:Connect(function(State)
-            if not TeleportCheck and queueteleport then
-                TeleportCheck = true
-                queueteleport([[
-                repeat wait() until game:IsLoaded()
-                task.wait(1)
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua",true))()
-]])
-            end
-        end)
-end
-
-local deviceUser
-
-if uis.TouchEnabled and not uis.KeyboardEnabled and not uis.MouseEnabled then
-    deviceUser = "Mobile"
-elseif not uis.TouchEnabled and uis.KeyboardEnabled and uis.MouseEnabled then
-    deviceUser = "PC"
-else
-    deviceUser = "Unknown"
-end
-
-local executorName = identifyexecutor()
-local executorLevel = getthreadcontext()
-
-local function getExecutorInfo()
-game:GetService("StarterGui"):SetCore("DevConsoleVisible", true)
-print("Device: " .. deviceUser)    
-print("Executor: " .. executorName)
-print("Executor Level: " .. executorLevel)
-end
-    
 local function rejoinServer()
     StarterGui:SetCore("SendNotification", {
         Title = "Rejoining...",
@@ -179,6 +80,155 @@ local function serverHop()
                 Duration = 3.5,
             })
     end
+end
+
+--// Re-Execution on Teleport
+local TeleportCheck = false
+
+local executeOnTeleport = true -- set to false if you dont want execution on server hop / rejoin
+
+if executeOnTeleport then
+
+        game.Players.LocalPlayer.OnTeleport:Connect(function(State)
+            if not TeleportCheck and queueteleport then
+                TeleportCheck = true
+                queueteleport([[
+                repeat wait() until game:IsLoaded()
+                task.wait(1)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua",true))()
+]])
+            end
+        end)
+end
+
+--// Test Variables Cleanup
+if _G.VariableTest and getgenv().VariableTest then
+    _G.VariableTest = nil
+    getgenv().VariableTest = nil
+end
+
+--// Executor Statistics
+local deviceUser
+
+if uis.TouchEnabled and not uis.KeyboardEnabled and not uis.MouseEnabled then
+    deviceUser = "Mobile"
+elseif not uis.TouchEnabled and uis.KeyboardEnabled and uis.MouseEnabled then
+    deviceUser = "PC"
+else
+    deviceUser = "Unknown"
+end
+
+local executorName = identifyexecutor()
+local executorLevel = getthreadcontext()
+
+local function getExecutorInfo()
+game:GetService("StarterGui"):SetCore("DevConsoleVisible", true)
+print("Device: " .. deviceUser)    
+print("Executor: " .. executorName)
+print("Executor Level: " .. executorLevel)
+end
+
+--// Timer
+local startTime = os.clock()
+local endTime = os.clock()
+local finalTime = endTime - startTime
+
+--// Class Scanning
+foundInstanceClass = false
+local showProperties = {
+    -- Value containers
+    IntValue = "Value",
+    StringValue = "Value",
+    BoolValue = "Value",
+    NumberValue = "Value",
+    Color3Value = "Value",
+    Vector3Value = "Value",
+    CFrameValue = "Value",
+    ObjectValue = "Value",
+
+    -- Common parts
+    Part = "Transparency",        -- useful to detect invisible parts
+    Model = "Parent",
+    UnionOperation = "Transparency",
+    Decal = "Texture",            
+    Texture = "Texture",
+
+    -- Characters and Gameplay
+    Humanoid = "DisplayName",
+    Tool = "ToolTip",
+    Animation = "AnimationId",
+    AnimationTrack = "Animation",
+
+    -- Sounds and Effects
+    Sound = "SoundId",
+    ParticleEmitter = "Enabled",
+}
+
+local foundClasses = {}
+local orderList = {}
+local inShowProps = nil
+local property = nil
+
+local function FetchAvailableClasses()
+    startTime = os.clock()
+    print([[[Toolbox]: Scanning for Available Classes...
+
+---------------------------------------------------------------------------------------------------------------------------
+
+        ]])
+    
+    foundClasses = {}
+
+    for _, instance in pairs(game:GetDescendants()) do
+        foundClasses[instance.ClassName] = true
+    end
+    
+    orderList = {}
+    for className in pairs(foundClasses) do
+        table.insert(orderList, className)
+    end
+    table.sort(orderList)
+
+    for _, className in ipairs(orderList) do
+    property = showProperties[className]
+    if property then
+        print(string.format(
+            "Name → %s | showProperties table = true | PropertyShown = %s",
+            className,
+            tostring(property)
+        ))
+    else
+        print(string.format(
+            "Name → %s | showProperties table = false",
+            className
+        ))
+    end
+end
+
+    endTime = os.clock()
+    finalTime = endTime - startTime
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+        ]], finalTime))
+end
+
+--// Variable Debugging
+local foundNewgetgenvNew = false
+local foundNew_GNew = false
+local found_G = false
+
+local original_G = {}
+local original_genv = {}
+
+for k, _ in pairs(_G) do
+    original_G[k] = true
+end
+
+for k, _ in pairs(getgenv()) do
+    original_genv[k] = true
 end
 
 local function DebuggetgenvNew()
@@ -287,52 +337,6 @@ if not found_G then
     print(string.format([[
 [Toolbox]: Scan completed in %.4f seconds. 
         
----------------------------------------------------------------------------------------------------------------------------
-
-        ]], finalTime))
-end
-
-local function FetchAvailableClasses()
-    startTime = os.clock()
-    print([[[Toolbox]: Scanning for Available Classes...
-
----------------------------------------------------------------------------------------------------------------------------
-
-        ]])
-    
-    foundClasses = {}
-
-    for _, instance in pairs(game:GetDescendants()) do
-        foundClasses[instance.ClassName] = true
-    end
-    
-    orderList = {}
-    for className in pairs(foundClasses) do
-        table.insert(orderList, className)
-    end
-    table.sort(orderList)
-
-    for _, className in ipairs(orderList) do
-    property = showProperties[className]
-    if property then
-        print(string.format(
-            "Name → %s | showProperties table = true | PropertyShown = %s",
-            className,
-            tostring(property)
-        ))
-    else
-        print(string.format(
-            "Name → %s | showProperties table = false",
-            className
-        ))
-    end
-end
-
-    endTime = os.clock()
-    finalTime = endTime - startTime
-    print(string.format([[
-[Toolbox]: Scan completed in %.4f seconds.
-
 ---------------------------------------------------------------------------------------------------------------------------
 
         ]], finalTime))
