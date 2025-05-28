@@ -637,6 +637,12 @@ if GlobalVariableTest then
 end
 
 --[[// Credits
-Infinite Yield: Server Hop
+Infinite Yield: Server Hop, Dex, Remote Spy
 Infinite Yield Discord Server: https://discord.gg/78ZuWSq
+Hosvile: Hydroxide 
+Hosvile Github: https://github.com/hosvile/
+cyberseall: Advanced Anti-Cheat Scanner
+cyberseall Scriptblox: https://www.scriptblox.com/u/cyberseall
+RIP#6666: FPS Booster
+RIP#6666 Discord Server: https://discord.gg/rips
 ]]
