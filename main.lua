@@ -27,6 +27,7 @@ end
 loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/advertise.lua",true))()
 
 --// Services & Setup
+setclip = setclipboard or (syn and syn.setclipboard) or (Clipboard and Clipboard.set)
 local starterGui = game:GetService("StarterGui")
 local uis = game:GetService("UserInputService")
 httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
@@ -402,7 +403,7 @@ end)
 Debugging1:CreateTextbox("Copy Global Variable V1", function(text)
     if _G[text] ~= nil then
         local variableValue = tostring(_G[text])
-        setclipboard("_G." .. text .. " = " .. variableValue)
+        setclip("_G." .. text .. " = " .. variableValue)
         print("Copied: _G." .. text .. " = " .. variableValue)
         starterGui:SetCore("DevConsoleVisible", true)
     else
@@ -414,7 +415,7 @@ end)
 Debugging1:CreateTextbox("Copy Global Variable V2", function(text)
     if getgenv()[text] ~= nil then
         local variableValue = tostring(getgenv()[text])
-        setclipboard("getgenv()." .. text .. " = " .. variableValue)
+        setclip("getgenv()." .. text .. " = " .. variableValue)
         print("Copied: getgenv()." .. text .. " = " .. variableValue)
         starterGui:SetCore("DevConsoleVisible", true)
     else
