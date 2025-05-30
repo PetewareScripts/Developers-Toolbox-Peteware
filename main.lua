@@ -122,8 +122,8 @@ end
 local executorName = identifyexecutor()
 local executorLevel = getthreadcontext()
 
-local function getExecutorInfo()
-game:GetService("starterGui"):SetCore("DevConsoleVisible", true)
+local function GetExecutorInfo()
+starterGui:SetCore("DevConsoleVisible", true)
 print("Device: " .. deviceUser)    
 print("Executor: " .. executorName)
 print("Executor Level: " .. executorLevel)
@@ -627,7 +627,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord
 end)
 
 Other:CreateButton("Executor Info", function()
-    getExecutorInfo()
+    GetExecutorInfo()
 end)
 
 Other:CreateButton("Rejoin", function()
