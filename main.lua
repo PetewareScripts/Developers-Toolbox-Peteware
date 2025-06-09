@@ -20,8 +20,8 @@ Peteware Development Team
 
 --// Loading Handler
 if not game:IsLoaded() then
-repeat task.wait() until game:IsLoaded()
-task.wait(1)
+    game.Loaded:Wait()
+    task.wait(1)
 end
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/Other/advertise.lua",true))()
