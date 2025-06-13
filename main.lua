@@ -97,7 +97,8 @@ if executeOnTeleport then
                 if not game:IsLoaded() then
                         game.Loaded:Wait()
                         task.wait(1)
-                    end loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua",true))()
+                end
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua",true))()
 ]])
             end
         end)
