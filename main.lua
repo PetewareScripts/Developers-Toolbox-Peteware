@@ -380,7 +380,7 @@ Tools:CreateButton("Adv AC Scanner", function()
 loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Advanced-Game-Anti-Cheat-Scanner-33244",true))()
 end)
 
-local Debugging1 = PetewareToolbox:NewSection("Debugging1 (Advanced)")
+local Debugging1 = PetewareToolbox:NewSection("Variable Debugging1")
 
 Debugging1:CreateButton("Print Global Variables V1", function()
 starterGui:SetCore("DevConsoleVisible", true)
@@ -426,7 +426,7 @@ Debugging1:CreateTextbox("Copy Global Variable V2", function(text)
     end
 end)
 
-local Debugging2 = PetewareToolbox:NewSection("Debugging2 (Advanced)")
+local Debugging2 = PetewareToolbox:NewSection("Variable Debugging2")
 
 Debugging2:CreateTextbox("Create Global Variable V1", function(input)
 local varName, value = input:match("^(%S+)%s*=%s*(.+)$")
