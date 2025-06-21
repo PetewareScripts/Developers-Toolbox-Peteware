@@ -105,9 +105,9 @@ if executeOnTeleport then
 end
 
 --// Test Variables Cleanup
-if _G.VariableTest and getgenv().VariableTest then
-    _G.VariableTest = nil
-    getgenv().VariableTest = nil
+if _G.ToolboxVariableTest and getgenv().VariableTest then
+    _G.ToolboxVariableTest = nil
+    getgenv().ToolboxVariableTest = nil
 end
 
 --// Executor Statistics
@@ -644,8 +644,8 @@ end)
 local GlobalVariableTest = true -- set to true to create a _G and a getgenv() Variable for testing
 
 if GlobalVariableTest then
-    _G.VariableTest = true
-    getgenv().VariableTest = true
+    _G.ToolboxVariableTest = true
+    getgenv().ToolboxVariableTest = true
 end
 
 --[[// Credits
