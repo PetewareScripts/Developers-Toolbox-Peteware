@@ -24,8 +24,6 @@ if not game:IsLoaded() then
     task.wait(1)
 end
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/Other/advertise.lua",true))()
-
 --// Services & Setup
 setclip = setclipboard or (syn and syn.setclipboard) or (Clipboard and Clipboard.set)
 local starterGui = game:GetService("StarterGui")
