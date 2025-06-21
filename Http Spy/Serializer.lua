@@ -1,30 +1,27 @@
 local config = {
     spaces = 4,
-    highlighting = false,
-    Tab = "    " -- 4 spaces default
+    highlighting = false
 }
 
+local Serializer = {}
 local clonef = clonefunction
-local str = string
-local gme = game
-local sub = clonef(str.sub)
-local format = clonef(str.format)
-local rep = clonef(str.rep)
-local byte = clonef(str.byte)
-local match = clonef(str.match)
-local getfn = clonef(gme.GetFullName)
+local rep = clonef(string.rep)
+local format = clonef(string.format)
+local sub = clonef(string.sub)
+local byte = clonef(string.byte)
+local match = clonef(string.match)
+local getfn = clonef(game.GetFullName)
 local info = clonef(debug.getinfo)
 local huge = math.huge
-local Type = clonef(typeof)
-local Pairs = clonef(pairs)
-local Assert = clonef(assert)
+local typeof = clonef(typeof)
+local pairs = clonef(pairs)
 local tostring = clonef(tostring)
 local concat = clonef(table.concat)
-local getmet = clonef(getmetatable)
+local getmetatable = clonef(getmetatable)
 local rawget = clonef(rawget)
 local rawset = clonef(rawset)
 
--- Roblox DataTypes
+-- List of Roblox datatypes
 local DataTypes = {
     Axes = true, BrickColor = true, CatalogSearchParams = true, CFrame = true,
     Color3 = true, ColorSequence = true, ColorSequenceKeypoint = true, DateTime = true,
@@ -36,160 +33,143 @@ local DataTypes = {
     Vector2int16 = true, Vector3 = true, Vector3int16 = true
 }
 
-local function Tostring(obj)
-    local mt = getmet(obj)
-    if not mt or Type(mt) ~= "table" then
-        return tostring(obj)
-    end
-    local b = rawget(mt, "__tostring")
-    rawset(mt, "__tostring", nil)
-    local r = tostring(obj)
-    rawset(mt, "__tostring", b)
-    return r
+-- Forward declaration
+local Serialize
+
+local function getTab(level)
+    return rep(" ", (config.spaces or 4) * level)
 end
 
-local function serializeArgs(...)
-    local Serialized = {}
-    for _, v in Pairs({...}) do
-        local vt = Type(v)
-        if vt == "string" then
-            table.insert(Serialized, format(config.highlighting and "\27[32m\"%s\"\27[0m" or "\"%s\"", v))
-        elseif vt == "table" then
-            table.insert(Serialized, Serialize(v, 0))
-        else
-            table.insert(Serialized, Tostring(v))
-        end
+local function safeToString(obj)
+    local mt = getmetatable(obj)
+    if mt and typeof(mt) == "table" then
+        local backup = rawget(mt, "__tostring")
+        rawset(mt, "__tostring", nil)
+        local out = tostring(obj)
+        rawset(mt, "__tostring", backup)
+        return out
     end
-    return concat(Serialized, ", ")
-end
-
-local function formatFunction(func)
-    local proto = info(func)
-    local params = {}
-    if proto and proto.nparams then
-        for i = 1, proto.nparams do
-            params[#params + 1] = format("p%d", i)
-        end
-        if proto.isvararg then
-            params[#params + 1] = "..."
-        end
-        return format("function (%s) --[[ %s ]] end", concat(params, ", "), proto.name or "anonymous")
-    end
-    return "function () end"
-end
-
-local function formatString(str)
-    local result = {}
-    for i = 1, #str do
-        local c = sub(str, i, i)
-        local b = byte(c)
-        if c == "\n" then
-            result[i] = "\\n"
-        elseif c == "\t" then
-            result[i] = "\\t"
-        elseif c == "\"" then
-            result[i] = "\\\""
-        elseif b < 32 or b > 126 then
-            result[i] = format("\\%d", b)
-        else
-            result[i] = c
-        end
-    end
-    return concat(result)
+    return tostring(obj)
 end
 
 local function formatNumber(n)
     if n == huge then return "math.huge" end
     if n == -huge then return "-math.huge" end
-    return Tostring(n)
+    return tostring(n)
 end
 
-local function formatIndex(idx, scope)
-    local vt = Type(idx)
-    if vt == "string" and not match(idx, "^[%a_][%w_]*$") then
-        return format("[%s]", config.highlighting and format("\27[32m\"%s\"\27[0m", formatString(idx)) or format("\"%s\"", formatString(idx)))
-    elseif vt == "table" then
-        return format("[%s]", Serialize(idx, scope + 1))
-    elseif vt == "number" or vt == "boolean" then
-        return format("[%s]", config.highlighting and format("\27[33m%s\27[0m", formatNumber(idx)) or formatNumber(idx))
-    elseif vt == "function" then
-        return format("[%s]", formatFunction(idx))
-    elseif vt == "Instance" then
-        return format("[%s]", getfn(idx))
+local function formatString(str)
+    local out = {}
+    for i = 1, #str do
+        local c = sub(str, i, i)
+        local b = byte(c)
+        if c == "\n" then
+            out[#out + 1] = "\\n"
+        elseif c == "\t" then
+            out[#out + 1] = "\\t"
+        elseif c == "\"" then
+            out[#out + 1] = "\\\""
+        elseif b < 32 or b > 126 then
+            out[#out + 1] = "\\" .. b
+        else
+            out[#out + 1] = c
+        end
+    end
+    return concat(out)
+end
+
+local function formatFunction(fn)
+    local proto = info(fn)
+    if proto and proto.nparams then
+        local args = {}
+        for i = 1, proto.nparams do args[i] = "p" .. i end
+        if proto.isvararg then args[#args + 1] = "..." end
+        return format("function(%s) --[[ %s ]] end", concat(args, ", "), proto.name or "anonymous")
+    end
+    return "function() end"
+end
+
+local function formatIndex(idx, depth)
+    local t = typeof(idx)
+    if t == "string" and not match(idx, "^[%a_][%w_]*$") then
+        return format("[%q]", idx)
+    elseif t == "number" or t == "boolean" then
+        return "[" .. tostring(idx) .. "]"
+    elseif t == "Instance" then
+        return "[" .. getfn(idx) .. "]"
+    elseif t == "function" then
+        return "[" .. formatFunction(idx) .. "]"
+    elseif t == "table" then
+        return "[" .. Serialize(idx, depth + 1) .. "]"
     else
-        return format("[%s]", Tostring(idx))
+        return "[" .. safeToString(idx) .. "]"
     end
 end
 
-function Serialize(tbl, scope, checked)
-    checked = checked or {}
-    if checked[tbl] then return format("\"%s -- recursive table\"", Tostring(tbl)) end
-    checked[tbl] = true
-    scope = scope or 0
+Serialize = function(tbl, depth, seen)
+    depth = depth or 0
+    seen = seen or {}
+    if seen[tbl] then return "\"<recursion>\"" end
+    seen[tbl] = true
 
-    local serialized = {}
-    local tab = rep(config.Tab, scope + 1)
-    local tabEnd = rep(config.Tab, scope)
+    local result = {}
+    for k, v in pairs(tbl) do
+        local line = getTab(depth + 1)
+        local key = formatIndex(k, depth)
+        local t = typeof(v)
 
-    local len = 0
-    for k, v in Pairs(tbl) do
-        len += 1
-        local keyStr = (len ~= k) and format("%s = ", formatIndex(k, scope)) or ""
-        local vt = Type(v)
-        local line = ""
-
-        if vt == "string" then
-            line = format("%s%s\"%s\"", tab, keyStr, formatString(v))
-            if config.highlighting then line = format("%s%s\27[32m\"%s\"\27[0m", tab, keyStr, formatString(v)) end
-        elseif vt == "number" or vt == "boolean" then
-            local val = formatNumber(v)
-            line = format("%s%s%s", tab, keyStr, val)
-            if config.highlighting then line = format("%s%s\27[33m%s\27[0m", tab, keyStr, val) end
-        elseif vt == "table" then
-            line = format("%s%s%s", tab, keyStr, Serialize(v, scope + 1, checked))
-        elseif vt == "userdata" then
-            line = format("%s%snewproxy()", tab, keyStr)
-        elseif vt == "function" then
-            line = format("%s%s%s", tab, keyStr, formatFunction(v))
-        elseif vt == "Instance" then
-            line = format("%s%s%s", tab, keyStr, getfn(v))
-        elseif DataTypes[vt] then
-            line = format("%s%s%s.new(%s)", tab, keyStr, vt, Tostring(v))
+        if t == "string" then
+            line = line .. key .. " = " .. format("\"%s\"", formatString(v))
+        elseif t == "number" or t == "boolean" then
+            line = line .. key .. " = " .. formatNumber(v)
+        elseif t == "table" then
+            line = line .. key .. " = " .. Serialize(v, depth + 1, seen)
+        elseif t == "function" then
+            line = line .. key .. " = " .. formatFunction(v)
+        elseif t == "Instance" then
+            line = line .. key .. " = " .. getfn(v)
+        elseif DataTypes[t] then
+            line = line .. key .. " = " .. t .. ".new(" .. safeToString(v) .. ")"
         else
-            line = format("%s%s\"%s\"", tab, keyStr, Tostring(v))
+            line = line .. key .. " = \"" .. safeToString(v) .. "\""
         end
 
-        table.insert(serialized, line)
+        result[#result + 1] = line
     end
 
-    if #serialized > 0 then
-        return format("{\n%s\n%s}", concat(serialized, ",\n"), tabEnd)
-    else
-        return "{}"
-    end
+    return "{\n" .. concat(result, ",\n") .. "\n" .. getTab(depth) .. "}"
 end
 
-local Serializer = {}
-
 function Serializer.Serialize(tbl)
-    Assert(Type(tbl) == "table", "Serialize expects a table")
+    if typeof(tbl) ~= "table" then
+        error("Serializer.Serialize expects a table, got " .. typeof(tbl))
+    end
     return Serialize(tbl)
 end
 
 function Serializer.FormatArguments(...)
-    return serializeArgs(...)
+    local out = {}
+    for _, v in pairs({...}) do
+        if typeof(v) == "string" then
+            out[#out + 1] = "\"" .. v .. "\""
+        elseif typeof(v) == "table" then
+            out[#out + 1] = Serialize(v)
+        else
+            out[#out + 1] = safeToString(v)
+        end
+    end
+    return concat(out, ", ")
 end
 
 function Serializer.FormatString(str)
-    Assert(Type(str) == "string", "FormatString expects a string")
+    if typeof(str) ~= "string" then error("Expected string") end
     return formatString(str)
 end
 
 function Serializer.UpdateConfig(opt)
-    Assert(Type(opt) == "table", "UpdateConfig expects a table")
-    config.spaces = opt.spaces or config.spaces
+    if typeof(opt) ~= "table" then error("UpdateConfig expects a table") end
+    config.spaces = opt.spaces or 4
     config.highlighting = opt.highlighting or false
-    config.Tab = rep(" ", config.spaces)
 end
 
 return Serializer
