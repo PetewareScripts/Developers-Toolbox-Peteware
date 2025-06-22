@@ -47,14 +47,6 @@ if _G.ToolboxVariableTest and getgenv().VariableTest then
     getgenv().ToolboxVariableTest = nil
 end
 
---// UI Display Order
-local newUI = coreGui:WaitForChild("WizardLibary")
-if newUI then
-    newUI.DisplayOrder = 10000
-end
-
-print(newUI.DisplayOrder)
-
 local function RejoinServer()
     starterGui:SetCore("SendNotification", {
         Title = "Rejoining...",
@@ -661,6 +653,14 @@ if GlobalVariableTest then
     _G.ToolboxVariableTest = true
     getgenv().ToolboxVariableTest = true
 end
+
+--// UI Display Order
+local newUI = coreGui:WaitForChild("WizardLibary")
+if newUI then
+    newUI.DisplayOrder = 10000
+end
+
+print(newUI.DisplayOrder)
 
 --[[// Credits
 Infinite Yield: Server Hop, Dex, Remote Spy
