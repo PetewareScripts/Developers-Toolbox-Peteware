@@ -25,11 +25,25 @@ if not game:IsLoaded() then
 end
 
 --// Services & Setup
-setclip = setclipboard or (syn and syn.setclipboard) or (Clipboard and Clipboard.set)
-local starterGui = game:GetService("StarterGui")
-local uis = game:GetService("UserInputService")
 httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+setclip = setclipboard or (syn and syn.setclipboard) or (Clipboard and Clipboard.set)
+
+local coreGui = game:GetService("CoreGui")
+local starterGui = game:GetService("StarterGui")
+local uis = game:GetService("UserInputService")
+
+--// UI Cleanup
+local WizardLibary = coreGui:WaitForChild("WizardLibrary")
+if WizardLibary then
+    WizardLibary:Destroy()
+end
+
+--// Test Variables Cleanup
+if _G.ToolboxVariableTest and getgenv().VariableTest then
+    _G.ToolboxVariableTest = nil
+    getgenv().ToolboxVariableTest = nil
+end
 
 local function RejoinServer()
     starterGui:SetCore("SendNotification", {
@@ -87,7 +101,8 @@ local TeleportCheck = false
 
 local executeOnTeleport = true -- set to false if you dont want execution on server hop / rejoin
 
-if executeOnTeleport then
+if executeOnTeleport and not _G.ToolboxQueueTeleport then
+    _G.ToolboxQueueTeleport = true
         game.Players.LocalPlayer.OnTeleport:Connect(function(State)
             if not TeleportCheck and queueteleport then
                 TeleportCheck = true
@@ -102,21 +117,10 @@ if executeOnTeleport then
         end)
 end
 
---// Test Variables Cleanup
-if _G.ToolboxVariableTest and getgenv().VariableTest then
-    _G.ToolboxVariableTest = nil
-    getgenv().ToolboxVariableTest = nil
-end
-
 --// Executor Statistics
-local deviceUser
-
-if uis.TouchEnabled and not uis.KeyboardEnabled and not uis.MouseEnabled then
-    deviceUser = "Mobile"
-elseif not uis.TouchEnabled and uis.KeyboardEnabled and uis.MouseEnabled then
-    deviceUser = "PC"
-else
-    deviceUser = "Unknown"
+local device = uis:GetPlatform()
+if device == "Enum.Platform.OSX" then
+    device = "MacOS"
 end
 
 local executorName = identifyexecutor()
@@ -124,7 +128,7 @@ local executorLevel = getthreadcontext()
 
 local function GetExecutorInfo()
 starterGui:SetCore("DevConsoleVisible", true)
-print("Device: " .. deviceUser)    
+print("Device: " .. tostring(device))    
 print("Executor: " .. executorName)
 print("Executor Level: " .. executorLevel)
 end
