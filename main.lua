@@ -34,9 +34,9 @@ local starterGui = game:GetService("StarterGui")
 local uis = game:GetService("UserInputService")
 
 --// UI Cleanup
-local WizardLibary = coreGui:FindFirstChild("WizardLibrary")
-if WizardLibary then
-    WizardLibary:Destroy()
+local wizardLibary = coreGui:FindFirstChild("WizardLibrary")
+if wizardLibary then
+    wizardLibary:Destroy()
 end
 
 task.wait(1)
@@ -46,6 +46,14 @@ if _G.ToolboxVariableTest and getgenv().VariableTest then
     _G.ToolboxVariableTest = nil
     getgenv().ToolboxVariableTest = nil
 end
+
+--// UI Display Order
+local newUI = coreGui:WaitForChild("WizardLibary")
+if newUI then
+    newUI.DisplayOrder = 10000
+end
+
+print(newUI.DisplayOrder)
 
 local function RejoinServer()
     starterGui:SetCore("SendNotification", {
