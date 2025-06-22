@@ -39,6 +39,8 @@ if WizardLibary then
     WizardLibary:Destroy()
 end
 
+task.wait(1)
+
 --// Test Variables Cleanup
 if _G.ToolboxVariableTest and getgenv().VariableTest then
     _G.ToolboxVariableTest = nil
