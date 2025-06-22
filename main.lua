@@ -118,17 +118,14 @@ if executeOnTeleport and not _G.ToolboxQueueTeleport then
 end
 
 --// Executor Statistics
-local device = uis:GetPlatform()
-if device == "Enum.Platform.OSX" then
-    device = "MacOS"
-end
+local device = "ill fix soon sos"
 
 local executorName = identifyexecutor()
 local executorLevel = getthreadcontext()
 
 local function GetExecutorInfo()
 starterGui:SetCore("DevConsoleVisible", true)
-print("Device: " .. tostring(device))    
+print("Device: " .. device)    
 print("Executor: " .. executorName)
 print("Executor Level: " .. executorLevel)
 end
