@@ -123,6 +123,8 @@ end
 local platform = uis:GetPlatform()
 if platform == Enum.Platform.OSX then
     platform = "MacOS"
+else
+    platform = tostring(platform)
 end
 
 local executorName = identifyexecutor()
@@ -130,7 +132,7 @@ local executorLevel = getthreadcontext()
 
 local function GetExecutorInfo()
 starterGui:SetCore("DevConsoleVisible", true)
-print("Device: " .. device)    
+print("Device: " .. platform)    
 print("Executor: " .. executorName)
 print("Executor Level: " .. executorLevel)
 end
