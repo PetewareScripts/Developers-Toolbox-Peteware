@@ -34,7 +34,7 @@ local starterGui = game:GetService("StarterGui")
 local uis = game:GetService("UserInputService")
 
 --// UI Cleanup
-local WizardLibary = coreGui:WaitForChild("WizardLibrary")
+local WizardLibary = coreGui:FindFirstChild("WizardLibrary")
 if WizardLibary then
     WizardLibary:Destroy()
 end
