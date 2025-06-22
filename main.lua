@@ -120,7 +120,10 @@ if executeOnTeleport and not _G.ToolboxQueueTeleport then
 end
 
 --// Executor Statistics
-local device = "ill fix soon sos"
+local platform = uis:GetPlatform()
+if platform == Enum.Platform.OSX then
+    platform = "MacOS"
+end
 
 local executorName = identifyexecutor()
 local executorLevel = getthreadcontext()
