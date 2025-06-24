@@ -655,7 +655,7 @@ if GlobalVariableTest then
 end
 
 --// UI Display Order
-local newUI = coreGui:FindFirstChild("WizardLibary")
+local newUI = coreGui:FindFirstChild("WizardLibrary")
 if newUI then
     newUI.DisplayOrder = 10000
 end
