@@ -29,6 +29,7 @@ httprequest = (syn and syn.request) or (http and http.request) or http_request o
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 setclip = setclipboard or (syn and syn.setclipboard) or (Clipboard and Clipboard.set)
 
+local player = game:GetService("Players").LocalPlayer
 local coreGui = game:GetService("CoreGui")
 local starterGui = game:GetService("StarterGui")
 local uis = game:GetService("UserInputService")
@@ -42,29 +43,29 @@ end
 task.wait(1)
 
 --// Test Variables Cleanup
-if _G.ToolboxVariableTest and getgenv().VariableTest then
+if _G.ToolboxVariableTest ~= nil and getgenv().VariableTest ~= nil then
     _G.ToolboxVariableTest = nil
     getgenv().ToolboxVariableTest = nil
 end
 
-local function RejoinServer()
+--// Notification Sender
+local function SendNotification(text, duration)
     starterGui:SetCore("SendNotification", {
-        Title = "Rejoining...",
-        Text = "Attempting to Rejoin Server",
+        Title = "Peteware",
+        Text = text,
         Icon = "rbxassetid://108052242103510",
-        Duration = 3.5,
+        Duration = duration or 3.5
     })
-task.wait(1)
+end
+
+local function RejoinServer()
+    SendNotification("Attempting to Rejoin Server")
+    task.wait(1)
     game:GetService("TeleportService"):TeleportToPlaceInstance(game.placeId, game.jobId)
 end
 
 local function ServerHop()
-    starterGui:SetCore("SendNotification", {
-                Title = "Hopping...",
-                Text = "Attempting to Server Hop",
-                Icon = "rbxassetid://108052242103510",
-                Duration = 3.5,
-                })
+    SendNotification("Attempting to Server Hop")
     if httprequest then
         local servers = {}
         local req = httprequest({Url = string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", game.placeId)})
@@ -81,20 +82,10 @@ local function ServerHop()
         if #servers > 0 then
             game:GetService("TeleportService"):TeleportToPlaceInstance(game.placeId, servers[math.random(1, #servers)], Player)
         else
-            return starterGui:SetCore("SendNotification", {
-                Title = "Server Hop",
-                Text = "Server Hop Failed. Couldnt find a available server",
-                Icon = "rbxassetid://108052242103510",
-                Duration = 3.5,
-            })
+            return SendNotification("Server Hop Failed. Couldnt find a available server")
         end
     else
-       starterGui:SetCore("SendNotification", {
-                Title = "Incompatible Exploit",
-                Text = "Your exploit does not support this function (missing request)",
-                Icon = "rbxassetid://108052242103510",
-                Duration = 3.5,
-            })
+       SendNotification("Incompatible Exploit. Your exploit does not support this function (missing request)")
     end
 end
 
@@ -124,17 +115,17 @@ local platform = uis:GetPlatform()
 if platform == Enum.Platform.OSX then
     platform = "MacOS"
 else
-    platform = tostring(platform)
+    platform = platform.Name
 end
 
-local executorName = identifyexecutor()
-local executorLevel = getthreadcontext()
+local executorName = identifyexecutor and identifyexecutor() or "Unknown"
+local executorLevel = getthreadcontext and getthreadcontext() or "Unknown"
 
 local function GetExecutorInfo()
-starterGui:SetCore("DevConsoleVisible", true)
-print("Device: " .. platform)    
-print("Executor: " .. executorName)
-print("Executor Level: " .. executorLevel)
+    pcall(function() starterGui:SetCore("DevConsoleVisible", true) end)
+    print("Device: " .. platform)    
+    print("Executor: " .. executorName)
+    print("Executor Level: " .. tostring(executorLevel))
 end
 
 --// Timer
@@ -598,44 +589,84 @@ end)
 
 local Other = PetewareToolbox:NewSection("Other")
 
-Other:CreateButton("Stopwatch", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/stopwatch.lua",true))()
-end)
-
 Other:CreateButton("Launch Peteware", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/Loader",true))()
 end)
 
+Other:CreateToggle("Client Anti-Kick", function(value)
+    if not hookmetamethod or typeof(hookmetamethod) ~= "function" then
+        return SendNotification("Incompatible Exploit. Your exploit does not support this command (missing hookmetamethod)")
+    end
+
+    if not value then
+        return SendNotification("Client Anti-Kick Disabled. You will now be able to be kicked via LocalScript.")
+    else
+        local player = game:GetService("Players").LocalPlayer
+        local oldhmmi
+        local oldhmmnc
+        local oldKickFunction
+
+        if hookfunction and typeof(hookfunction) == "function" then
+            oldKickFunction = hookfunction(player.Kick, function()
+                SendNotification("Blocked Kick Attempt (direct call)")
+            end)
+        end
+
+        oldhmmi = hookmetamethod(game, "__index", function(self, method)
+            if self == player and method:lower() == "kick" then
+                return function()
+                    SendNotification("Blocked Kick Attempt (__index)")
+                    error("Expected ':' not '.' calling member function Kick", 2)
+                end
+            end
+            return oldhmmi(self, method)
+        end)
+
+        oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
+            if self == player and getnamecallmethod():lower() == "kick" then
+                SendNotification("Blocked Kick Attempt (__namecall)")
+                return
+            end
+            return oldhmmnc(self, ...)
+        end)
+
+        SendNotification("Client Anti-Kick Enabled. You are now immune to kick scripts via LocalScript.")
+    end
+end)
+
 Other:CreateButton("FPS Booster", function()
--- Made by RIP#6666
-_G.Settings = {
-    Players = {
-        ["Ignore Me"] = true, -- Ignore your Character
-        ["Ignore Others"] = true -- Ignore other Characters
-    },
-    Meshes = {
-        Destroy = false, -- Destroy Meshes
-        LowDetail = true -- Low detail meshes (NOT SURE IT DOES ANYTHING)
-    },
-    Images = {
-        Invisible = true, -- Invisible Images
-        LowDetail = false, -- Low detail images (NOT SURE IT DOES ANYTHING)
-        Destroy = false, -- Destroy Images
-    },
-    ["No Particles"] = true, -- Disables all ParticleEmitter, Trail, Smoke, Fire and Sparkles
-    ["No Camera Effects"] = true, -- Disables all PostEffect's (Camera/Lighting Effects)
-    ["No Explosions"] = true, -- Makes Explosion's invisible
-    ["No Clothes"] = true, -- Removes Clothing from the game
-    ["Low Water Graphics"] = true, -- Removes Water Quality
-    ["No Shadows"] = true, -- Remove Shadows
-    ["Low Rendering"] = true, -- Lower Rendering
-    ["Low Quality Parts"] = true -- Lower quality parts
-}
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/FPSBooster.lua"))()
+    _G.Settings = {
+        Players = {
+            ["Ignore Me"] = true, -- Ignore your Character
+            ["Ignore Others"] = true -- Ignore other Characters
+            },
+        Meshes = {
+            Destroy = false, -- Destroy Meshes
+            LowDetail = true -- Low detail meshes (NOT SURE IT DOES ANYTHING)
+            },
+        Images = {
+            Invisible = true, -- Invisible Images
+            LowDetail = false, -- Low detail images (NOT SURE IT DOES ANYTHING)
+            Destroy = false, -- Destroy Images
+            },
+        ["No Particles"] = true, -- Disables all ParticleEmitter, Trail, Smoke, Fire and Sparkles
+        ["No Camera Effects"] = true, -- Disables all PostEffect's (Camera/Lighting Effects)
+        ["No Explosions"] = true, -- Makes Explosion's invisible
+        ["No Clothes"] = true, -- Removes Clothing from the game
+        ["Low Water Graphics"] = true, -- Removes Water Quality
+        ["No Shadows"] = true, -- Remove Shadows
+        ["Low Rendering"] = true, -- Lower Rendering
+        ["Low Quality Parts"] = true -- Lower quality parts
+        }
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/FPSBooster.lua"))()
 end)
 
 Other:CreateButton("Executor Info", function()
     GetExecutorInfo()
+end)
+
+Other:CreateButton("Stopwatch", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/stopwatch.lua",true))()
 end)
 
 Other:CreateButton("Rejoin", function()
@@ -660,10 +691,8 @@ if newUI then
     newUI.DisplayOrder = 10000
 end
 
-print(newUI.DisplayOrder)
-
 --[[// Credits
-Infinite Yield: Server Hop, Dex, Remote Spy
+Infinite Yield: Server Hop, Dex, Remote Spy, Client-Anti-Kick
 Infinite Yield Discord Server: https://discord.gg/78ZuWSq
 Hosvile: Hydroxide 
 Hosvile Github: https://github.com/hosvile/
