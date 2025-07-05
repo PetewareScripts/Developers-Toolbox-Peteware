@@ -22,9 +22,8 @@
 
 Paste this into your Roblox executor:
 
-\`\`\`lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua", true))()
-\`\`\`
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua", true))()```
 
 ---
 
