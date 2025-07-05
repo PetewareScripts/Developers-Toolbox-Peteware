@@ -52,6 +52,18 @@ if _G.AntiKickEnabled ~= nil then
     _G.AntiKickEnabled = nil
 end
 
+--// Configuration Handler
+local mainFolder = "Peteware"
+local toolboxFolder = mainFolder .. "/Toolbox"
+
+if not isfolder(mainFolder) then
+    makefolder(mainFolder)
+end
+
+if not isfolder(toolboxFolder) then
+    makefolder(toolboxFolder)
+end
+
 --// Notification Sender
 local function SendNotification(text, duration)
     starterGui:SetCore("SendNotification", {
@@ -62,12 +74,44 @@ local function SendNotification(text, duration)
     })
 end
 
+--// Addons Handler
+local addonsFolder = toolboxFolder .. "/Addons"
+
+if not isfolder(addonsFolder) then
+    makefolder(addonsFolder)
+end
+
+local addonName
+local addonScript
+local selectedAddon
+local addonDropdown
+
+local function FetchAddonList()
+    local files = listfiles(addonsFolder)
+    local list = {}
+    for _, path in ipairs(files) do
+        if path:sub(-4) == ".lua" then
+            local filename = path:match("[^/\\]+$") or path 
+            filename = filename:gsub("%.lua$", "")
+            table.insert(list, filename)
+        end
+    end
+    return list
+end
+
+local addonList = FetchAddonList()
+if #addonList == 0 then
+    table.insert(addonList, "No Addons Found")
+end
+
+--// Server Rejoin
 local function RejoinServer()
     SendNotification("Attempting to Rejoin Server")
     task.wait(1)
     game:GetService("TeleportService"):TeleportToPlaceInstance(game.placeId, game.jobId)
 end
 
+--// Server Hop
 local function ServerHop()
     SendNotification("Attempting to Server Hop")
     if httprequest then
@@ -591,6 +635,61 @@ InstanceScanner:CreateTextbox("Scan by Class", function(className)
 ]], finalTime))
 end)
 
+local Addons = PetewareToolbox:NewSection("Addons")
+
+Addons:CreateTextbox("Input Script Name", function(text)
+    addonName = text:gsub("%.lua$", "") .. ".lua"
+end)
+
+Addons:CreateTextbox("Input Script", function(text)
+    addonScript = text
+end)
+
+Addons:CreateButton("Save Addon", function()
+    if not addonName or addonName == "" or not addonScript or addonScript == "" then
+        return SendNotification("Missing name or script input.")
+    end
+
+    writefile(addonsFolder .. "/" .. addonName, addonScript)
+    addonDropdown = Addons:CreateDropdown("Select Addon", addonList, 1, function(text)
+        selectedAddon = text ~= "No Addons Found" and text or nil
+    end)
+    SendNotification("Saved Addon: " .. addonName)
+end)
+
+addonDropdown = Addons:CreateDropdown("Select Addon", addonList, 1, function(text)
+    selectedAddon = text ~= "No Addons Found" and text or nil
+end)
+
+Addons:CreateButton("Load Selected Addon", function()
+    if not selectedAddon then return SendNotification("No addon selected.") end
+
+    local path = addonsFolder .. "/" .. selectedAddon .. ".lua"
+    if not isfile(path) then return SendNotification("Addon not found.") end
+
+    local success, result = pcall(function()
+        loadstring(readfile(path))()
+    end)
+
+    if success then
+        SendNotification("Loaded Addon: " .. selectedAddon)
+    else
+        print("Error loading addon:\n" .. tostring(result))
+        SendNotification("Error Occured. Please try and Re-Execute the Developers Toolbox.")
+    end
+end)
+
+Addons:CreateButton("Delete Selected Addon", function()
+    if not selectedAddon then return SendNotification("No addon selected.") end
+
+    local path = addonsFolder .. "/" .. selectedAddon .. ".lua"
+    if not isfile(path) then return SendNotification("Addon not found.") end
+
+    delfile(path)
+    selectedAddon = nil
+    SendNotification("Deleted Addon: " .. path:match("[^/\\]+$"))
+end)
+
 local Other = PetewareToolbox:NewSection("Other")
 
 Other:CreateButton("Launch Peteware", function()
@@ -683,6 +782,10 @@ Other:CreateButton("Server Hop", function()
 end)
 
 Other:CreateButton("Destroy UI", function()
+    if _G.ToolboxVariableTest ~= nil or getgenv().VariableTest ~= nil then
+        _G.ToolboxVariableTest = nil
+        getgenv().ToolboxVariableTest = nil
+    end
     coreGui:FindFirstChild("WizardLibrary"):Destroy()
 end)
 
