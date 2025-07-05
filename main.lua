@@ -651,9 +651,6 @@ Addons:CreateButton("Save Addon", function()
     end
 
     writefile(addonsFolder .. "/" .. addonName, addonScript)
-    addonDropdown = Addons:CreateDropdown("Select Addon", addonList, 1, function(text)
-        selectedAddon = text ~= "No Addons Found" and text or nil
-    end)
     SendNotification("Saved Addon: " .. addonName)
     task.wait(3)
     SendNotification("Please Re-Execute the Developers Toolbox to apply addon changes.")
