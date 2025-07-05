@@ -1,4 +1,3 @@
-cat << 'EOF' > README.md
 # Developer Toolbox | Peteware
 
 ---
@@ -44,4 +43,3 @@ Join our Discord for support and updates:
 ---
 
 ### Developed by Peteware
-EOF
