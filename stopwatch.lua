@@ -21,6 +21,7 @@ Peteware Development Team
 --// Services & Setup
 local coreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
+local conn
 
 --// UI Cleanup
 local oldUI = coreGui:FindFirstChild("StopwatchGUI")
@@ -117,11 +118,12 @@ startButton.MouseButton1Click:Connect(startStopwatch)
 stopButton.MouseButton1Click:Connect(stopStopwatch)
 resetButton.MouseButton1Click:Connect(resetStopwatch)
 closeButton.MouseButton1Click:Connect(function()
+    conn:Disconnect()
     screenGui:Destroy()
 end)
 
 --// Loop Handler
-RunService.RenderStepped:Connect(function()
+conn = RunService.RenderStepped:Connect(function()
     if running then
         elapsedTime = tick() - startTime
         local totalSeconds = math.floor(elapsedTime)
