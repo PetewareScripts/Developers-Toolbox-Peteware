@@ -5,7 +5,7 @@
 ## Features
 
 - Execution on teleport (server hop / rejoin)
-- Server Hop & Rejoin buttons with notifications
+- Server Hop & Rejoin buttons
 - Client Anti-Kick toggle (blocks LocalScript kick attempts)
 - Global variable debugging for `_G` and `getgenv()`
 - Instance scanner by class or property
