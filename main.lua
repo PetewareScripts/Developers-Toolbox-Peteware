@@ -655,6 +655,8 @@ Addons:CreateButton("Save Addon", function()
         selectedAddon = text ~= "No Addons Found" and text or nil
     end)
     SendNotification("Saved Addon: " .. addonName)
+    task.wait(3)
+    SendNotification("Please Re-Execute the Developers Toolbox to apply addon changes.")
 end)
 
 addonDropdown = Addons:CreateDropdown("Select Addon", addonList, 1, function(text)
@@ -688,6 +690,8 @@ Addons:CreateButton("Delete Selected Addon", function()
     delfile(path)
     selectedAddon = nil
     SendNotification("Deleted Addon: " .. path:match("[^/\\]+$"))
+    task.wait(3)
+    SendNotification("Please Re-Execute the Developers Toolbox to apply addon changes.")
 end)
 
 local Other = PetewareToolbox:NewSection("Other")
