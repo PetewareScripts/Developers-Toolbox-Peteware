@@ -9,7 +9,7 @@
 - Client Anti-Kick toggle (blocks LocalScript kick attempts)
 - Global variable debugging for `_G` and `getgenv()`
 - Instance scanner by class or property
-- Quick launch buttons for exploit tools:
+- Buttons for popular exploit tools such as:
   - Infinite Yield
   - Remote Spy
   - Dex Explorer
