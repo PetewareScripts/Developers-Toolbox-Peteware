@@ -42,10 +42,14 @@ end
 
 task.wait(1)
 
---// Test Variables Cleanup
-if _G.ToolboxVariableTest ~= nil and getgenv().VariableTest ~= nil then
+--// Variables Cleanup
+if _G.ToolboxVariableTest ~= nil or getgenv().VariableTest ~= nil then
     _G.ToolboxVariableTest = nil
     getgenv().ToolboxVariableTest = nil
+end
+
+if _G.AntiKickEnabled ~= nil then
+    _G.AntiKickEnabled = nil
 end
 
 --// Notification Sender
@@ -594,11 +598,12 @@ Other:CreateButton("Launch Peteware", function()
 end)
 
 Other:CreateToggle("Client Anti-Kick", function(value)
+    _G.AntiKickEnabled = value
     if not hookmetamethod or typeof(hookmetamethod) ~= "function" then
         return SendNotification("Incompatible Exploit. Your exploit does not support this command (missing hookmetamethod)")
     end
 
-    if not value then
+    if not _G.AntiKickEnabled then
         return SendNotification("Client Anti-Kick Disabled. You will now be able to be kicked via LocalScript.")
     else
         local player = game:GetService("Players").LocalPlayer
@@ -606,14 +611,14 @@ Other:CreateToggle("Client Anti-Kick", function(value)
         local oldhmmnc
         local oldKickFunction
 
-        if hookfunction and typeof(hookfunction) == "function" then
+        if hookfunction and typeof(hookfunction) == "function" and _G.AntiKickEnabled then
             oldKickFunction = hookfunction(player.Kick, function()
                 SendNotification("Blocked Kick Attempt (direct call)")
             end)
         end
 
         oldhmmi = hookmetamethod(game, "__index", function(self, method)
-            if self == player and method:lower() == "kick" then
+            if self == player and method:lower() == "kick" and _G.AntiKickEnabled then
                 return function()
                     SendNotification("Blocked Kick Attempt (__index)")
                     error("Expected ':' not '.' calling member function Kick", 2)
@@ -623,7 +628,7 @@ Other:CreateToggle("Client Anti-Kick", function(value)
         end)
 
         oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
-            if self == player and getnamecallmethod():lower() == "kick" then
+            if self == player and getnamecallmethod():lower() == "kick" and _G.AntiKickEnabled then
                 SendNotification("Blocked Kick Attempt (__namecall)")
                 return
             end
@@ -677,6 +682,10 @@ Other:CreateButton("Server Hop", function()
     ServerHop()
 end)
 
+Other:CreateButton("Destroy UI", function()
+    coreGui:FindFirstChild("WizardLibrary"):Destroy()
+end)
+
 --// Global Variable Testing
 local GlobalVariableTest = true -- set to true to create a _G and a getgenv() Variable for testing
 
@@ -691,8 +700,16 @@ if newUI then
     newUI.DisplayOrder = 10000
 end
 
+--// Events
+local conn = coreGui.ChildRemoved:Connect(function(child)
+    if child.Name == "WizardLibrary" and _G.AntiKickEnabled ~= nil then
+        _G.AntiKickEnabled = nil
+        conn:Disconnect()
+    end
+end)
+
 --[[// Credits
-Infinite Yield: Server Hop, Dex, Remote Spy, Client-Anti-Kick
+Infinite Yield: Server Hop,f Dex, Remote Spy, Client-Anti-Kick
 Infinite Yield Discord Server: https://discord.gg/78ZuWSq
 Hosvile: Hydroxide 
 Hosvile Github: https://github.com/hosvile/
