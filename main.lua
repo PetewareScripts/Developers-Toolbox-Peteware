@@ -413,31 +413,31 @@ local PetewareToolbox = Library:NewWindow("Dev Toolbox | Peteware")
 local Tools = PetewareToolbox:NewSection("Toolbox")
 
 Tools:CreateButton("Infinite Yield", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-Addons/refs/heads/main/IY_FE.lua"))()
 end)
 
 Tools:CreateButton("Remote Spy", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
 end)
 
 Tools:CreateButton("Dex Explorer", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
 end)
 
 Tools:CreateButton("Hydroxide", function()
-local owner = "Hosvile"
-local branch = "revision"
-
-local function webImport(file)
-    return loadstring(game:HttpGetAsync(("https://raw.githubusercontent.com/%s/MC-Hydroxide/%s/%s.lua"):format(owner, branch, file)), file .. '.lua')()
-end
-
-webImport("init")
-webImport("ui/main")
+    local owner = "Hosvile"
+    local branch = "revision"
+    
+    local function webImport(file)
+        return loadstring(game:HttpGetAsync(("https://raw.githubusercontent.com/%s/MC-Hydroxide/%s/%s.lua"):format(owner, branch, file)), file .. '.lua')()
+    end
+    
+    webImport("init")
+    webImport("ui/main")
 end)
 
 Tools:CreateButton("Adv AC Scanner", function()
-loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Advanced-Game-Anti-Cheat-Scanner-33244",true))()
+    loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Advanced-Game-Anti-Cheat-Scanner-33244",true))()
 end)
 
 if device == "PC" then
