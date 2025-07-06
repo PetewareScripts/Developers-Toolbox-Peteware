@@ -666,7 +666,7 @@ Addons:CreateButton("Save Addon", function()
     SendNotification("Please Re-Execute the Developers Toolbox to apply addon changes.")
 end)
 
-addonDropdown = Addons:CreateDropdown("Select Addon", addonList, 1, function(text)
+addonDropdown = Addons:CreateDropdown("Select Addon", addonList, function(text)
     selectedAddon = text ~= "No Addons Found" and text or nil
 end)
 
