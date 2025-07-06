@@ -104,6 +104,14 @@ if #addonList == 0 then
     table.insert(addonList, "No Addons Found")
 end
 
+--// Device Detection
+local device
+if uis.KeyboardEnabled and uis.MouseEnabled then
+    device = "PC"
+else
+    device = "Mobile"
+end
+
 --// Server Rejoin
 local function RejoinServer()
     SendNotification("Attempting to Rejoin Server")
@@ -425,6 +433,7 @@ Tools:CreateButton("Adv AC Scanner", function()
 loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Advanced-Game-Anti-Cheat-Scanner-33244",true))()
 end)
 
+if device == "PC" then
 local Debugging1 = PetewareToolbox:NewSection("Variable Debugging1")
 
 Debugging1:CreateButton("Print Global Variables V1", function()
@@ -586,6 +595,7 @@ Debugging2:CreateTextbox("Delete Global Variable V2", function(text)
         starterGui:SetCore("DevConsoleVisible", true)
     end
 end)
+end
 
 local InstanceScanner = PetewareToolbox:NewSection("Instance Scanner")
 
