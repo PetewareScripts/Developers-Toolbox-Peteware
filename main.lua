@@ -18,6 +18,13 @@ Thank you for respecting the license and supporting open source software!
 Peteware Development Team
 ]]
 
+--// Executing Check
+if _G.ToolboxExecuting then
+    return starterGui:SetCore("SendNotification", {Title = "Peteware", Text = "Already Executing. Please Wait!", Icon = "rbxassetid://108052242103510", Duration = 3.5})
+else
+    _G.ToolboxExecuting = true
+end
+
 --// Loading Handler
 if not game:IsLoaded() then
     game.Loaded:Wait()
@@ -797,7 +804,7 @@ Other:CreateButton("Destroy UI", function()
         _G.ToolboxVariableTest = nil
         getgenv().ToolboxVariableTest = nil
     end
-    coreGui:FindFirstChild("WizardLibrary"):Destroy()
+    pcall(function() coreGui:FindFirstChild("WizardLibrary"):Destroy() end)
 end)
 
 --// Global Variable Testing
@@ -821,6 +828,9 @@ local conn = coreGui.ChildRemoved:Connect(function(child)
         conn:Disconnect()
     end
 end)
+
+--// Executing Finished
+_G.ToolboxExecuting = nil
 
 --[[// Credits
 Infinite Yield: Server Hop,f Dex, Remote Spy, Client-Anti-Kick
