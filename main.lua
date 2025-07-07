@@ -413,7 +413,11 @@ local PetewareToolbox = Library:NewWindow("Dev Toolbox | Peteware")
 local Tools = PetewareToolbox:NewSection("Toolbox")
 
 Tools:CreateButton("Infinite Yield", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-Addons/refs/heads/main/IY_FE.lua"))()
+    if mainFolder .. "/PetewareAddons.iy" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    else
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-Addons/refs/heads/main/IY_FE.lua"))()
+    end
 end)
 
 Tools:CreateButton("Remote Spy", function()
