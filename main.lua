@@ -81,36 +81,6 @@ local function SendNotification(text, duration)
     })
 end
 
---// Addons Handler
-local addonsFolder = toolboxFolder .. "/Addons"
-
-if not isfolder(addonsFolder) then
-    makefolder(addonsFolder)
-end
-
-local addonName
-local addonScript
-local selectedAddon
-local addonDropdown
-
-local function FetchAddonList()
-    local files = listfiles(addonsFolder)
-    local list = {}
-    for _, path in ipairs(files) do
-        if path:sub(-4) == ".lua" then
-            local filename = path:match("[^/\\]+$") or path 
-            filename = filename:gsub("%.lua$", "")
-            table.insert(list, filename)
-        end
-    end
-    return list
-end
-
-local addonList = FetchAddonList()
-if #addonList == 0 then
-    table.insert(addonList, "No Addons Found")
-end
-
 --// Device Detection
 local device
 if uis.KeyboardEnabled and uis.MouseEnabled then
@@ -171,6 +141,36 @@ if executeOnTeleport and not _G.ToolboxQueueTeleport then
 ]])
             end
         end)
+end
+
+--// Addons Handler
+local addonsFolder = toolboxFolder .. "/Addons"
+
+if not isfolder(addonsFolder) then
+    makefolder(addonsFolder)
+end
+
+local addonName
+local addonScript
+local selectedAddon
+local addonDropdown
+
+local function FetchAddonList()
+    local files = listfiles(addonsFolder)
+    local list = {}
+    for _, path in ipairs(files) do
+        if path:sub(-4) == ".lua" then
+            local filename = path:match("[^/\\]+$") or path 
+            filename = filename:gsub("%.lua$", "")
+            table.insert(list, filename)
+        end
+    end
+    return list
+end
+
+local addonList = FetchAddonList()
+if #addonList == 0 then
+    table.insert(addonList, "No Addons Found")
 end
 
 --// Executor Statistics
