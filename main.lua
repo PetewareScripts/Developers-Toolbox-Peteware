@@ -441,7 +441,7 @@ Tools:CreateButton("Hydroxide", function()
 end)
 
 Tools:CreateButton("Adv AC Scanner", function()
-    loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Advanced-Game-Anti-Cheat-Scanner-33244",true))()
+    loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Advanced-Game-Anti-Cheat-Scanner-33244"))()
 end)
 
 if device == "PC" then
@@ -715,7 +715,7 @@ end)
 local Other = PetewareToolbox:NewSection("Other")
 
 Other:CreateButton("Launch Peteware", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/Loader",true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/Loader"))()
 end)
 
 Other:CreateToggle("Client Anti-Kick", function(value)
@@ -792,7 +792,7 @@ Other:CreateButton("Executor Info", function()
 end)
 
 Other:CreateButton("Stopwatch", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/stopwatch.lua",true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/stopwatch.lua"))()
 end)
 
 Other:CreateButton("Rejoin", function()
