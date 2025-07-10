@@ -59,6 +59,10 @@ if _G.AntiKickEnabled ~= nil then
     _G.AntiKickEnabled = nil
 end
 
+if _G.InstantProximityPrompts ~= nil then
+    _G.InstantProximityPrompts = nil
+end
+
 --// Configuration Handler
 local mainFolder = "Peteware"
 local toolboxFolder = mainFolder .. "/Toolbox"
@@ -172,6 +176,14 @@ local addonList = FetchAddonList()
 if #addonList == 0 then
     table.insert(addonList, "No Addons Found")
 end
+
+--// Instant Proximity Prompts
+local proximityPromptService = game:GetService("ProximityPromptService")
+proximityPromptService.PromptButtonHoldBegan:Connect(function(promptheld)
+    if _G.InstantProximityPrompts then
+        fireproximityprompt(promptheld)
+    end
+end)
 
 --// Executor Statistics
 local platform = uis:GetPlatform()
@@ -714,8 +726,13 @@ end)
 
 local Other = PetewareToolbox:NewSection("Other")
 
-Other:CreateButton("Launch Peteware", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Peteware-V1/refs/heads/main/Loader"))()
+Other:CreateToggle("Instant Prompts", function(value)
+    _G.InstantProximityPrompts = value
+    if _G.InstantProximityPrompts then
+        SendNotification("Instant Proximity Prompts Enabled. You can now instantly interact with Proximity Prompts.")
+    else
+        SendNotification("Instant Proximity Prompt Disabled. You are now unable to interact with Proximity Prompts instantly.")
+    end
 end)
 
 Other:CreateToggle("Client Anti-Kick", function(value)
