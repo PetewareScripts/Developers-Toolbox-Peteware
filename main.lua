@@ -20,7 +20,7 @@ Peteware Development Team
 
 --// Executing Check
 if _G.ToolboxExecuting then
-    return starterGui:SetCore("SendNotification", {Title = "Peteware", Text = "Already Executing. Please Wait!", Icon = "rbxassetid://108052242103510", Duration = 3.5})
+    return game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Peteware", Text = "Already Executing. Please Wait!", Icon = "rbxassetid://108052242103510", Duration = 3.5})
 else
     _G.ToolboxExecuting = true
 end
