@@ -76,12 +76,40 @@ if not isfolder(toolboxFolder) then
 end
 
 --// Notification Sender
+local bell_ring = "rbxassetid://108052242103510"
+
 local function SendNotification(text, duration)
     starterGui:SetCore("SendNotification", {
         Title = "Peteware",
         Text = text,
-        Icon = "rbxassetid://108052242103510",
+        Icon = bell_ring,
         Duration = duration or 3.5
+    })
+end
+
+local function SendInteractiveNotification(options)
+    local bindable = Instance.new("BindableFunction")
+
+    local text = options.Text or "Are you sure?"
+    local duration = options.Duration or 3.5
+    local button1 = options.Button1 or "Yes"
+    local button2 = options.Button2 or "No"
+    local callback = options.Callback
+
+    bindable.OnInvoke = function(value)
+        if callback then
+            callback(value)
+        end
+    end
+
+    starterGui:SetCore("SendNotification", {
+        Title = "Peteware",
+        Text = text,
+        Icon = bell_ring,
+        Duration = duration,
+        Button1 = button1,
+        Button2 = button2,
+        Callback = bindable
     })
 end
 
@@ -142,7 +170,7 @@ if executeOnTeleport and not _G.ToolboxQueueTeleport then
                         task.wait(1)
                 end
                 loadstring(game:HttpGet("https://raw.githubusercontent.com/PetewareScripts/Developers-Toolbox-Peteware/refs/heads/main/main.lua"))()
-]])
+                ]])
             end
         end)
 end
@@ -712,16 +740,31 @@ Addons:CreateButton("Load Selected Addon", function()
 end)
 
 Addons:CreateButton("Delete Selected Addon", function()
-    if not selectedAddon then return SendNotification("No addon selected.") end
+    if not selectedAddon then
+        return SendNotification("No addon selected.")
+    end
 
     local path = addonsFolder .. "/" .. selectedAddon .. ".lua"
-    if not isfile(path) then return SendNotification("Addon not found.") end
+    if not isfile(path) then
+        return SendNotification("Addon not found.")
+    end
 
-    delfile(path)
-    selectedAddon = nil
-    SendNotification("Deleted Addon: " .. path:match("[^/\\]+$"))
-    task.wait(3)
-    SendNotification("Please Re-Execute the Developers Toolbox to apply addon changes.")
+    SendInteractiveNotification({
+        Text = "Are you sure you want to delete this addon?",
+        Button1 = "Yes",
+        Button2 = "No",
+        Callback = function(value)
+            if value == "Yes" then
+                delfile(path)
+                selectedAddon = nil
+                SendNotification("Deleted Addon: " .. path:match("[^/\\]+$"))
+                task.wait(3)
+                SendNotification("Please Re-Execute the Developers Toolbox to apply addon changes.")
+            elseif value == "No" then
+                SendNotification("Addon deletion cancelled.")
+            end
+        end
+    })
 end)
 
 local Other = PetewareToolbox:NewSection("Other")
@@ -820,12 +863,23 @@ Other:CreateButton("Server Hop", function()
     ServerHop()
 end)
 
-Other:CreateButton("Destroy UI", function()
-    if _G.ToolboxVariableTest ~= nil or getgenv().VariableTest ~= nil then
-        _G.ToolboxVariableTest = nil
-        getgenv().ToolboxVariableTest = nil
-    end
-    pcall(function() coreGui:FindFirstChild("WizardLibrary"):Destroy() end)
+Other:CreateButton("Exit Toolbox", function()
+    SendInteractiveNotification({
+        Text = "Are you sure you want to exit the developers toolbox?",
+        Button1 = "Yes",
+        Button2 = "No",
+        Callback = function(value)
+            if value == "Yes" then
+                if _G.ToolboxVariableTest ~= nil or getgenv().VariableTest ~= nil then
+                    _G.ToolboxVariableTest = nil
+                    getgenv().ToolboxVariableTest = nil
+                end
+                pcall(function() coreGui:FindFirstChild("WizardLibrary"):Destroy() end)
+            elseif value == "No" then
+                SendNotification("Exit cancelled.")
+            end
+        end
+    })
 end)
 
 --// Global Variable Testing
