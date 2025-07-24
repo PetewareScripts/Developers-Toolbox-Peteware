@@ -81,7 +81,7 @@ local bell_ring = "rbxassetid://108052242103510"
 local function SendNotification(text, duration)
     starterGui:SetCore("SendNotification", {
         Title = "Peteware",
-        Text = text,
+        Text = text or "Text Content not specified.",
         Icon = bell_ring,
         Duration = duration or 3.5
     })
@@ -480,8 +480,8 @@ Tools:CreateButton("Hydroxide", function()
     webImport("ui/main")
 end)
 
-Tools:CreateButton("Adv AC Scanner", function()
-    loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Advanced-Game-Anti-Cheat-Scanner-33244"))()
+Tools:CreateButton("Ketamine", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/InfernusScripts/Ketamine/refs/heads/main/Ketamine.lua"))()
 end)
 
 if device == "PC" then
