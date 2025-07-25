@@ -55,14 +55,6 @@ if _G.ToolboxVariableTest ~= nil or getgenv().VariableTest ~= nil then
     getgenv().ToolboxVariableTest = nil
 end
 
-if _G.AntiKickEnabled ~= nil then
-    _G.AntiKickEnabled = nil
-end
-
-if _G.InstantProximityPrompts ~= nil then
-    _G.InstantProximityPrompts = nil
-end
-
 --// Configuration Handler
 local mainFolder = "Peteware"
 local toolboxFolder = mainFolder .. "/Toolbox"
@@ -208,10 +200,45 @@ end
 --// Instant Proximity Prompts
 local proximityPromptService = game:GetService("ProximityPromptService")
 proximityPromptService.PromptButtonHoldBegan:Connect(function(promptheld)
-    if _G.InstantProximityPrompts then
+    if instantProximityPrompts then
         fireproximityprompt(promptheld)
     end
 end)
+
+--// Client Anti-Kick
+local clientAntiKick
+local oldhmmi
+local oldhmmnc
+local oldKickFunction
+
+if hookfunction and typeof(hookfunction) == "function" then
+    oldKickFunction = hookfunction(player.Kick, function()
+        if clientAntiKick then
+            SendNotification("Blocked Kick Attempt (direct call)")
+            return
+        end
+    end)
+end
+
+if hookmetamethod and typeof(hookmetamethod) == "function" then
+    oldhmmi = hookmetamethod(game, "__index", function(self, method)
+        if clientAntiKick and self == player and method:lower() == "kick" then
+            return function()
+                SendNotification("Blocked Kick Attempt (__index)")
+                error("Expected ':' not '.' calling member function Kick", 2)
+            end
+        end
+        return oldhmmi(self, method)
+    end)
+
+    oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
+        if clientAntiKick and self == player and getnamecallmethod():lower() == "kick" then
+            SendNotification("Blocked Kick Attempt (__namecall)")
+            return
+        end
+        return oldhmmnc(self, ...)
+    end)
+end
 
 --// Executor Statistics
 local platform = uis:GetPlatform()
@@ -488,22 +515,22 @@ if device == "PC" then
 local Debugging1 = PetewareToolbox:NewSection("Variable Debugging1")
 
 Debugging1:CreateButton("Print Global Variables V1", function()
-starterGui:SetCore("DevConsoleVisible", true)
+    starterGui:SetCore("DevConsoleVisible", true)
     Debug_G()
 end)
 
 Debugging1:CreateButton("Print Global Variables V2", function()
-starterGui:SetCore("DevConsoleVisible", true)
+    starterGui:SetCore("DevConsoleVisible", true)
     Debuggetgenv()
 end)
 
 Debugging1:CreateButton("Print Recent Global Variables V1", function()
-starterGui:SetCore("DevConsoleVisible", true)
+    starterGui:SetCore("DevConsoleVisible", true)
     Debug_GNew()
 end)
 
 Debugging1:CreateButton("Print Recent Global Variables V2", function()
-starterGui:SetCore("DevConsoleVisible", true)
+    starterGui:SetCore("DevConsoleVisible", true)
     DebuggetgenvNew()
 end)
 
@@ -651,7 +678,7 @@ end
 local InstanceScanner = PetewareToolbox:NewSection("Instance Scanner")
 
 InstanceScanner:CreateButton("Fetch All Available Classes", function()
-starterGui:SetCore("DevConsoleVisible", true)
+    starterGui:SetCore("DevConsoleVisible", true)
     FetchAvailableClasses()
 end)
 
@@ -770,8 +797,8 @@ end)
 local Other = PetewareToolbox:NewSection("Other")
 
 Other:CreateToggle("Instant Prompts", function(value)
-    _G.InstantProximityPrompts = value
-    if _G.InstantProximityPrompts then
+    instantProximityPrompts = value
+    if instantProximityPrompts then
         SendNotification("Instant Proximity Prompts Enabled. You can now instantly interact with Proximity Prompts.")
     else
         SendNotification("Instant Proximity Prompt Disabled. You are now unable to interact with Proximity Prompts instantly.")
@@ -779,44 +806,15 @@ Other:CreateToggle("Instant Prompts", function(value)
 end)
 
 Other:CreateToggle("Client Anti-Kick", function(value)
-    _G.AntiKickEnabled = value
+    clientAntiKick = value
     if not hookmetamethod or typeof(hookmetamethod) ~= "function" then
         return SendNotification("Incompatible Exploit. Your exploit does not support this command (missing hookmetamethod)")
     end
-
-    if not _G.AntiKickEnabled then
-        return SendNotification("Client Anti-Kick Disabled. You will now be able to be kicked via LocalScript.")
+    
+    if clientAntiKick then
+        SendNotification("Client Anti-Kick Enabled.")
     else
-        local player = game:GetService("Players").LocalPlayer
-        local oldhmmi
-        local oldhmmnc
-        local oldKickFunction
-
-        if hookfunction and typeof(hookfunction) == "function" and _G.AntiKickEnabled then
-            oldKickFunction = hookfunction(player.Kick, function()
-                SendNotification("Blocked Kick Attempt (direct call)")
-            end)
-        end
-
-        oldhmmi = hookmetamethod(game, "__index", function(self, method)
-            if self == player and method:lower() == "kick" and _G.AntiKickEnabled then
-                return function()
-                    SendNotification("Blocked Kick Attempt (__index)")
-                    error("Expected ':' not '.' calling member function Kick", 2)
-                end
-            end
-            return oldhmmi(self, method)
-        end)
-
-        oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
-            if self == player and getnamecallmethod():lower() == "kick" and _G.AntiKickEnabled then
-                SendNotification("Blocked Kick Attempt (__namecall)")
-                return
-            end
-            return oldhmmnc(self, ...)
-        end)
-
-        SendNotification("Client Anti-Kick Enabled. You are now immune to kick scripts via LocalScript.")
+        SendNotification("Client Anti-Kick Disabled.")
     end
 end)
 
@@ -898,8 +896,9 @@ end
 
 --// Events
 local conn = coreGui.ChildRemoved:Connect(function(child)
-    if child.Name == "WizardLibrary" and _G.AntiKickEnabled ~= nil then
-        _G.AntiKickEnabled = nil
+    if child.Name == "WizardLibrary" and clientAntiKick ~= nil then
+        clientAntiKick = nil
+        instantProximityPrompts = nil
         conn:Disconnect()
     end
 end)
