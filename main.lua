@@ -167,183 +167,10 @@ if executeOnTeleport and not _G.ToolboxQueueTeleport then
         end)
 end
 
---// Addons Handler
-local addonsFolder = toolboxFolder .. "/Addons"
-
-if not isfolder(addonsFolder) then
-    makefolder(addonsFolder)
-end
-
-local addonName
-local addonScript
-local selectedAddon
-local addonDropdown
-
-local function FetchAddonList()
-    local files = listfiles(addonsFolder)
-    local list = {}
-    for _, path in ipairs(files) do
-        if path:sub(-4) == ".lua" then
-            local filename = path:match("[^/\\]+$") or path 
-            filename = filename:gsub("%.lua$", "")
-            table.insert(list, filename)
-        end
-    end
-    return list
-end
-
-local addonList = FetchAddonList()
-if #addonList == 0 then
-    table.insert(addonList, "No Addons Found")
-end
-
---// Instant Proximity Prompts
-local proximityPromptService = game:GetService("ProximityPromptService")
-proximityPromptService.PromptButtonHoldBegan:Connect(function(promptheld)
-    if instantProximityPrompts then
-        fireproximityprompt(promptheld)
-    end
-end)
-
---// Client Anti-Kick
-local clientAntiKick
-local oldhmmi
-local oldhmmnc
-local oldKickFunction
-
-if hookfunction and typeof(hookfunction) == "function" then
-    oldKickFunction = hookfunction(player.Kick, function()
-        if clientAntiKick then
-            SendNotification("Blocked Kick Attempt (direct call)")
-            return
-        end
-    end)
-end
-
-if hookmetamethod and typeof(hookmetamethod) == "function" then
-    oldhmmi = hookmetamethod(game, "__index", function(self, method)
-        if clientAntiKick and self == player and method:lower() == "kick" then
-            return function()
-                SendNotification("Blocked Kick Attempt (__index)")
-                error("Expected ':' not '.' calling member function Kick", 2)
-            end
-        end
-        return oldhmmi(self, method)
-    end)
-
-    oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
-        if clientAntiKick and self == player and getnamecallmethod():lower() == "kick" then
-            SendNotification("Blocked Kick Attempt (__namecall)")
-            return
-        end
-        return oldhmmnc(self, ...)
-    end)
-end
-
---// Executor Statistics
-local platform = uis:GetPlatform()
-if platform == Enum.Platform.OSX then
-    platform = "MacOS"
-else
-    platform = platform.Name
-end
-
-local executorName = identifyexecutor and identifyexecutor() or "Unknown"
-local executorLevel = getthreadcontext and getthreadcontext() or "Unknown"
-
-local function GetExecutorInfo()
-    pcall(function() starterGui:SetCore("DevConsoleVisible", true) end)
-    print("Device: " .. platform)    
-    print("Executor: " .. executorName)
-    print("Executor Level: " .. tostring(executorLevel))
-end
-
 --// Timer
 local startTime = os.clock()
 local endTime = os.clock()
 local finalTime = endTime - startTime
-
---// Class Scanning
-foundInstanceClass = false
-local showProperties = {
-    -- Value containers
-    IntValue = "Value",
-    StringValue = "Value",
-    BoolValue = "Value",
-    NumberValue = "Value",
-    Color3Value = "Value",
-    Vector3Value = "Value",
-    CFrameValue = "Value",
-    ObjectValue = "Value",
-
-    -- Common parts
-    Part = "Transparency",        -- useful to detect invisible parts
-    Model = "Parent",
-    UnionOperation = "Transparency",
-    Decal = "Texture",            
-    Texture = "Texture",
-
-    -- Characters and Gameplay
-    Humanoid = "DisplayName",
-    Tool = "ToolTip",
-    Animation = "AnimationId",
-    AnimationTrack = "Animation",
-
-    -- Sounds and Effects
-    Sound = "SoundId",
-    ParticleEmitter = "Enabled",
-}
-
-local foundClasses = {}
-local orderList = {}
-local inShowProps = nil
-local property = nil
-
-local function FetchAvailableClasses()
-    startTime = os.clock()
-    print([[[Toolbox]: Scanning for Available Classes...
-
----------------------------------------------------------------------------------------------------------------------------
-
-        ]])
-    
-    foundClasses = {}
-
-    for _, instance in pairs(game:GetDescendants()) do
-        foundClasses[instance.ClassName] = true
-    end
-    
-    orderList = {}
-    for className in pairs(foundClasses) do
-        table.insert(orderList, className)
-    end
-    table.sort(orderList)
-
-    for _, className in ipairs(orderList) do
-    property = showProperties[className]
-    if property then
-        print(string.format(
-            "Name → %s | showProperties table = true | PropertyShown = %s",
-            className,
-            tostring(property)
-        ))
-    else
-        print(string.format(
-            "Name → %s | showProperties table = false",
-            className
-        ))
-    end
-end
-
-    endTime = os.clock()
-    finalTime = endTime - startTime
-    print(string.format([[
-[Toolbox]: Scan completed in %.4f seconds.
-
----------------------------------------------------------------------------------------------------------------------------
-
-        ]], finalTime))
-end
 
 --// Variable Debugging
 local foundNewgetgenvNew = false
@@ -470,6 +297,179 @@ if not found_G then
 ---------------------------------------------------------------------------------------------------------------------------
 
         ]], finalTime))
+end
+
+--// Class Scanning
+foundInstanceClass = false
+local showProperties = {
+    -- Value containers
+    IntValue = "Value",
+    StringValue = "Value",
+    BoolValue = "Value",
+    NumberValue = "Value",
+    Color3Value = "Value",
+    Vector3Value = "Value",
+    CFrameValue = "Value",
+    ObjectValue = "Value",
+
+    -- Common parts
+    Part = "Transparency",        -- useful to detect invisible parts
+    Model = "Parent",
+    UnionOperation = "Transparency",
+    Decal = "Texture",            
+    Texture = "Texture",
+
+    -- Characters and Gameplay
+    Humanoid = "DisplayName",
+    Tool = "ToolTip",
+    Animation = "AnimationId",
+    AnimationTrack = "Animation",
+
+    -- Sounds and Effects
+    Sound = "SoundId",
+    ParticleEmitter = "Enabled",
+}
+
+local foundClasses = {}
+local orderList = {}
+local inShowProps = nil
+local property = nil
+
+local function FetchAvailableClasses()
+    startTime = os.clock()
+    print([[[Toolbox]: Scanning for Available Classes...
+
+---------------------------------------------------------------------------------------------------------------------------
+
+        ]])
+    
+    foundClasses = {}
+
+    for _, instance in pairs(game:GetDescendants()) do
+        foundClasses[instance.ClassName] = true
+    end
+    
+    orderList = {}
+    for className in pairs(foundClasses) do
+        table.insert(orderList, className)
+    end
+    table.sort(orderList)
+
+    for _, className in ipairs(orderList) do
+    property = showProperties[className]
+    if property then
+        print(string.format(
+            "Name → %s | showProperties table = true | PropertyShown = %s",
+            className,
+            tostring(property)
+        ))
+    else
+        print(string.format(
+            "Name → %s | showProperties table = false",
+            className
+        ))
+    end
+end
+
+    endTime = os.clock()
+    finalTime = endTime - startTime
+    print(string.format([[
+[Toolbox]: Scan completed in %.4f seconds.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+        ]], finalTime))
+end
+
+--// Addons Handler
+local addonsFolder = toolboxFolder .. "/Addons"
+
+if not isfolder(addonsFolder) then
+    makefolder(addonsFolder)
+end
+
+local addonName
+local addonScript
+local selectedAddon
+local addonDropdown
+
+local function FetchAddonList()
+    local files = listfiles(addonsFolder)
+    local list = {}
+    for _, path in ipairs(files) do
+        if path:sub(-4) == ".lua" then
+            local filename = path:match("[^/\\]+$") or path 
+            filename = filename:gsub("%.lua$", "")
+            table.insert(list, filename)
+        end
+    end
+    return list
+end
+
+local addonList = FetchAddonList()
+if #addonList == 0 then
+    table.insert(addonList, "No Addons Found")
+end
+
+--// Instant Proximity Prompts
+local proximityPromptService = game:GetService("ProximityPromptService")
+proximityPromptService.PromptButtonHoldBegan:Connect(function(promptheld)
+    if instantProximityPrompts then
+        fireproximityprompt(promptheld)
+    end
+end)
+
+--// Client Anti-Kick
+local clientAntiKick
+local oldhmmi
+local oldhmmnc
+local oldKickFunction
+
+if hookfunction and typeof(hookfunction) == "function" then
+    oldKickFunction = hookfunction(player.Kick, function()
+        if clientAntiKick then
+            SendNotification("Blocked Kick Attempt (direct call)")
+            return
+        end
+    end)
+end
+
+if hookmetamethod and typeof(hookmetamethod) == "function" then
+    oldhmmi = hookmetamethod(game, "__index", function(self, method)
+        if clientAntiKick and self == player and method:lower() == "kick" then
+            return function()
+                SendNotification("Blocked Kick Attempt (__index)")
+                error("Expected ':' not '.' calling member function Kick", 2)
+            end
+        end
+        return oldhmmi(self, method)
+    end)
+
+    oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
+        if clientAntiKick and self == player and getnamecallmethod():lower() == "kick" then
+            SendNotification("Blocked Kick Attempt (__namecall)")
+            return
+        end
+        return oldhmmnc(self, ...)
+    end)
+end
+
+--// Executor Statistics
+local platform = uis:GetPlatform()
+if platform == Enum.Platform.OSX then
+    platform = "MacOS"
+else
+    platform = platform.Name
+end
+
+local executorName = identifyexecutor and identifyexecutor() or "Unknown"
+local executorLevel = getthreadcontext and getthreadcontext() or "Unknown"
+
+local function FetchExecutorInfo()
+    pcall(function() starterGui:SetCore("DevConsoleVisible", true) end)
+    print("Device: " .. platform)    
+    print("Executor: " .. executorName)
+    print("Executor Level: " .. tostring(executorLevel))
 end
 
 --// Main UI
@@ -846,7 +846,7 @@ Other:CreateButton("FPS Booster", function()
 end)
 
 Other:CreateButton("Executor Info", function()
-    GetExecutorInfo()
+    FetchExecutorInfo()
 end)
 
 Other:CreateButton("Stopwatch", function()
